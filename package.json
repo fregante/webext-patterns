@@ -1,0 +1,63 @@
+{
+	"name": "webext-patterns",
+	"version": "0.0.0",
+	"description": "Tool to convert the patterns of your WebExtension manifest to regex",
+	"keywords": [
+		"browser",
+		"chrome",
+		"extension",
+		"firefox",
+		"glob",
+		"permission",
+		"match",
+		"webext"
+	],
+	"repository": "fregante/webext-patterns",
+	"license": "MIT",
+	"author": "Federico Brigante <opensource@bfred.it> (bfred.it)",
+	"type": "module",
+	"main": "index.js",
+	"module": "index.js",
+	"files": [
+		"index.js",
+		"index.d.ts"
+	],
+	"scripts": {
+		"build": "tsc",
+		"prepack": "tsc --sourceMap false",
+		"test": "tsc && ava && xo",
+		"watch": "tsc --watch"
+	},
+	"xo": {
+		"envs": [
+			"browser",
+			"webextensions"
+		],
+		"rules": {
+			"unicorn/better-regex": "off",
+			"unicorn/no-fn-reference-in-iterator": "off",
+			"unicorn/import-index": "off",
+			"import/extensions": "off",
+			"import/no-useless-path-segments": "off",
+			"comma-dangle": [
+				"error",
+				"always-multiline"
+			]
+		}
+	},
+	"ava": {
+		"nodeArguments": [
+			"--experimental-modules"
+		]
+	},
+	"devDependencies": {
+		"@sindresorhus/tsconfig": "^0.7.0",
+		"@types/chrome": "0.0.106",
+		"ava": "^3.8.1",
+		"sinon": "^9.0.2",
+		"ts-node": "^8.10.1",
+		"type-fest": "^0.13.1",
+		"typescript": "^3.8.3",
+		"xo": "^0.30.0"
+	}
+}
