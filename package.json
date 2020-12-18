@@ -1,6 +1,6 @@
 {
 	"name": "webext-patterns",
-	"version": "0.9.0",
+	"version": "0.9.1",
 	"description": "Tool to convert the patterns of your WebExtension manifest to regex",
 	"keywords": [
 		"browser",
