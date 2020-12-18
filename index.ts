@@ -13,8 +13,9 @@ function getRawRegex(matchPattern: string): string {
 		.replace(/[/]/g, '[/]'); // Escape slashes
 
 	host = (host ?? '') // Undefined for file:///
+		.replace(/^[*][.]/, '([^/]+.)*') // Initial wildcard
+		.replace(/^[*]$/, '[^/]+') // Only wildcard
 		.replace(/[.]/g, '[.]') // Escape dots
-		.replace(/^[*]/, '[^/]+') // Initial or only wildcard
 		.replace(/[*]$/g, '[^.]+'); // Last wildcard
 
 	pathname = pathname

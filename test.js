@@ -29,6 +29,7 @@ map.set('http://*/foo*', [
 map.set('https://*.google.com/foo*bar', [
 	'https://www.google.com/foo/baz/bar',
 	'https://docs.google.com/foobar',
+	'https://google.com/foonderbar',
 ]);
 map.set('http://example.org/foo/bar.html', [
 	'http://example.org/foo/bar.html',
