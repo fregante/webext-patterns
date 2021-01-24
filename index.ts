@@ -27,5 +27,9 @@ function getRawRegex(matchPattern: string): string {
 }
 
 export function patternToRegex(...matchPatterns: readonly string[]): RegExp {
+	if (matchPatterns.includes('<all_urls>')) {
+		return /^(https?|file|ftp):[/]+/;
+	}
+
 	return new RegExp(matchPatterns.map(getRawRegex).join('|'));
 }

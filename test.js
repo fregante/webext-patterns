@@ -47,6 +47,15 @@ map.set('*://mail.google.com/*', [
 	'https://mail.google.com/foobar',
 ]);
 
+map.set('<all_urls>', [
+	'http://mail.google.com/foo/baz/bar',
+	'https://mail.google.com/foobar',
+	'file:///foo/bar.html',
+	'file:///foo',
+	'http://bfred.it',
+	'ftp://example.com',
+]);
+
 for (const [pattern, urls] of map) {
 	test(macro, pattern, urls);
 }
