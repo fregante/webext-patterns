@@ -15,16 +15,16 @@ const map = new Map();
 map.set('http://*/*', [
 	'http://www.google.com/',
 	'http://example.org/foo/bar.html',
-	'http://bfred.it',
-	'http://bfred.it/search',
-	'http://www.bfred.it/',
-	'http://www.bfred.it/mail',
+	'http://fregante.com',
+	'http://fregante.com/search',
+	'http://www.fregante.com/',
+	'http://www.fregante.com/mail',
 ]);
 map.set('http://*/foo*', [
 	'http://example.com/foo/bar.html',
 	'http://www.google.com/foo',
-	'http://bfred.it/foobar',
-	'http://mail.bfred.it/foo/king',
+	'http://fregante.com/foobar',
+	'http://mail.fregante.com/foo/king',
 ]);
 map.set('https://*.google.com/foo*bar', [
 	'https://www.google.com/foo/baz/bar',
@@ -52,7 +52,7 @@ map.set('<all_urls>', [
 	'https://mail.google.com/foobar',
 	'file:///foo/bar.html',
 	'file:///foo',
-	'http://bfred.it',
+	'http://fregante.com',
 	'ftp://example.com',
 ]);
 

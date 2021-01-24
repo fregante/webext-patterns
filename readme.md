@@ -63,4 +63,4 @@ Accepts any number of `string` arguments and returns a single regex to match all
 
 ## License
 
-MIT © [Federico Brigante](https://bfred.it)
+MIT © [Federico Brigante](https://fregante.com)
