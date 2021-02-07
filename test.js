@@ -42,6 +42,10 @@ map.set('http://127.0.0.1/*', [
 	'http://127.0.0.1/',
 	'http://127.0.0.1/foo/bar.html ',
 ]);
+map.set('http://127.0.0.1:8080/*', [
+	'http://127.0.0.1:8080/',
+	'http://127.0.0.1:8080/foo/bar.html ',
+]);
 map.set('*://mail.google.com/*', [
 	'http://mail.google.com/foo/baz/bar',
 	'https://mail.google.com/foobar',
