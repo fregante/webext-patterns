@@ -9,7 +9,9 @@ This might be incomplete. Please help me test it by adding more pattern and URLs
 
 ## Install
 
-You can just download the [standalone bundle](https://packd.fregante.now.sh/webext-patterns) (it might take a minute to download) and include the file in your `manifest.json`, or:
+You can download the [standalone bundle](https://bundle.fregante.com/?pkg=webext-patterns) and include it in your `manifest.json`.
+
+Or use `npm`:
 
 ```sh
 npm install webext-patterns
