@@ -59,3 +59,7 @@ map.set('<all_urls>', [
 for (const [pattern, urls] of map) {
 	test(macro, pattern, urls);
 }
+
+test('Should not match anything if no patterns are passed', t => {
+	t.notRegex('https://mail.google.com/foobar', patternToRegex());
+});

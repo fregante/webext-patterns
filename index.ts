@@ -29,6 +29,11 @@ function getRawRegex(matchPattern: string): string {
 }
 
 export function patternToRegex(...matchPatterns: readonly string[]): RegExp {
+	// No pattern, match nothing https://stackoverflow.com/q/14115522/288906
+	if (matchPatterns.length === 0) {
+		return /$./;
+	}
+
 	if (matchPatterns.includes('<all_urls>')) {
 		return /^(https?|file|ftp):[/]+/;
 	}
