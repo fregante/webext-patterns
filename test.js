@@ -63,3 +63,31 @@ for (const [pattern, urls] of map) {
 test('Should not match anything if no patterns are passed', t => {
 	t.notRegex('https://mail.google.com/foobar', patternToRegex());
 });
+
+const invalidPatterns = [
+	'https://mozilla.org', // No path
+	'https://*zilla.org/', // "*" in host must be the only character or be followed by "."
+	'http*://mozilla.org/', // "*" in scheme must be the only character
+	'https://mozilla.*.org/', // "*" in host must be at the start
+	'*://*', // Empty path: this should be "*://*/*".
+	'file://*', // Empty path: this should be "file:///*".
+];
+for (const pattern of invalidPatterns) {
+	test('Invalid pattern: ' + pattern, t => {
+		t.throws(() => patternToRegex(pattern), {
+			message: /is an invalid pattern, it must match/,
+		});
+	});
+}
+
+const invalidPatternsThatPass = [
+	'resource://path/', // Unsupported scheme
+	'https://mozilla.org:80/', // Host must not include a port number
+];
+for (const pattern of invalidPatternsThatPass) {
+	test.failing('Invalid pattern: ' + pattern, t => {
+		t.throws(() => patternToRegex(pattern), {
+			message: /is an invalid pattern, it must match/,
+		});
+	});
+}
