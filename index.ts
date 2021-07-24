@@ -3,6 +3,9 @@ export const patternValidationRegex = /^(https?|wss?|file|ftp|\*):\/\/(\*|\*\.[^
 
 const isFirefox = typeof navigator === 'object' && navigator.userAgent.includes('Firefox/');
 
+export const allStarsRegex = isFirefox ? /^(https?|wss?):[/][/][^/]+([/].*)?$/ : /^https?:[/][/][^/]+([/].*)?$/;
+export const allUrlsRegex = /^(https?|file|ftp):[/]+/;
+
 function getRawRegex(matchPattern: string): string {
 	if (!patternValidationRegex.test(matchPattern)) {
 		throw new Error(matchPattern + ' is an invalid pattern, it must match ' + String(patternValidationRegex));
@@ -35,7 +38,11 @@ export function patternToRegex(...matchPatterns: readonly string[]): RegExp {
 	}
 
 	if (matchPatterns.includes('<all_urls>')) {
-		return /^(https?|file|ftp):[/]+/;
+		return allUrlsRegex;
+	}
+
+	if (matchPatterns.includes('*://*/*')) {
+		return allStarsRegex;
 	}
 
 	return new RegExp(matchPatterns.map(getRawRegex).join('|'));
