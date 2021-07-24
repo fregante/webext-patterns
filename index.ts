@@ -1,7 +1,11 @@
 // Copied from https://github.com/mozilla/gecko-dev/blob/073cc24f53d0cf31403121d768812146e597cc9d/toolkit/components/extensions/schemas/manifest.json#L487-L491
 export const patternValidationRegex = /^(https?|wss?|file|ftp|\*):\/\/(\*|\*\.[^*/]+|[^*/]+)\/.*$|^file:\/\/\/.*$|^resource:\/\/(\*|\*\.[^*/]+|[^*/]+)\/.*$|^about:/;
 
+
 const isFirefox = typeof navigator === 'object' && navigator.userAgent.includes('Firefox/');
+
+const allStarsRegex = isFirefox ? /^(https?|wss?):[/][/][^/]+([/].*)?$/ : /^https?:[/][/][^/]+([/].*)?$/;
+const allUrlsRegex = /^(https?|file|ftp):[/]+/;
 
 function getRawRegex(matchPattern: string): string {
 	if (!patternValidationRegex.test(matchPattern)) {
@@ -35,7 +39,11 @@ export function patternToRegex(...matchPatterns: readonly string[]): RegExp {
 	}
 
 	if (matchPatterns.includes('<all_urls>')) {
-		return /^(https?|file|ftp):[/]+/;
+		return allUrlsRegex;
+	}
+
+	if (matchPatterns.includes('*://*/*')) {
+		return allStarsRegex;
 	}
 
 	return new RegExp(matchPatterns.map(getRawRegex).join('|'));
