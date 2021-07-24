@@ -45,5 +45,5 @@ export function patternToRegex(...matchPatterns: readonly string[]): RegExp {
 		return allStarsRegex;
 	}
 
-	return new RegExp(matchPatterns.map(getRawRegex).join('|'));
+	return new RegExp(matchPatterns.map(x => getRawRegex(x)).join('|'));
 }

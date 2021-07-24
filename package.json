@@ -24,7 +24,7 @@
 	],
 	"scripts": {
 		"build": "tsc",
-		"prepack": "tsc --sourceMap false",
+		"prepare": "tsc --sourceMap false",
 		"test": "tsc && ava && xo",
 		"watch": "tsc --watch"
 	},
@@ -34,21 +34,16 @@
 			"webextensions"
 		],
 		"rules": {
-			"unicorn/better-regex": "off",
-			"unicorn/no-array-callback-reference": "off",
-			"comma-dangle": [
-				"error",
-				"always-multiline"
-			]
+			"unicorn/better-regex": "off"
 		}
 	},
 	"devDependencies": {
-		"@sindresorhus/tsconfig": "^0.8.0",
-		"@types/chrome": "0.0.128",
+		"@sindresorhus/tsconfig": "^1.0.2",
+		"@types/chrome": "0.0.148",
 		"ava": "^3.15.0",
-		"sinon": "^9.2.4",
-		"type-fest": "^0.20.2",
-		"typescript": "^4.1.3",
-		"xo": "^0.37.1"
+		"sinon": "^11.1.1",
+		"type-fest": "^1.2.2",
+		"typescript": "^4.3.5",
+		"xo": "^0.42.0"
 	}
 }
