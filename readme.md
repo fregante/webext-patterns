@@ -23,6 +23,7 @@ import {patternToRegex} from 'webext-patterns';
 ```
 
 ## Usage
+### patterns
 
 ```js
 patternToRegex('http://*/*');
@@ -41,9 +42,31 @@ googleRegex.test('https://google.it/search'); // -> true
 googleRegex.test('https://google.de/search'); // -> false
 ```
 
+### globs
+```js
+globToRegex('https://???.example.com/foo/*');
+// Returns /https:\/\/.{1}.{1}.{1}\.example\.com\/foo\/.*/
+
+const gmailRegex = globToRegex('*://mai?.google.com/*');
+gmailRegex.test('https://mail.google.com/a/b/c'); // -> true
+gmailRegex.test('https://photos.google.com/a/b/c'); // -> false
+
+// Also accepts an array of patterns and returns a single regex
+const googleRegex = globToRegex(
+	'*google.com*',
+	'*google.it*'
+);
+googleRegex.test('https://google.it/search'); // -> true
+googleRegex.test('https://google.de/search'); // -> false
+```
+
 ## API
 
 #### patternToRegex(pattern1, pattern2, etc)
+
+Accepts any number of `string` arguments and returns a single regex to match all of them.
+
+#### globToRegex(glob1, glob2, etc)
 
 Accepts any number of `string` arguments and returns a single regex to match all of them.
 

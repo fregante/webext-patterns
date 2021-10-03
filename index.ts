@@ -6,7 +6,7 @@ const isFirefox = typeof navigator === 'object' && navigator.userAgent.includes(
 export const allStarsRegex = isFirefox ? /^(https?|wss?):[/][/][^/]+([/].*)?$/ : /^https?:[/][/][^/]+([/].*)?$/;
 export const allUrlsRegex = /^(https?|file|ftp):[/]+/;
 
-function getRawRegex(matchPattern: string): string {
+function getRawPatternRegex(matchPattern: string): string {
 	if (!patternValidationRegex.test(matchPattern)) {
 		throw new Error(matchPattern + ' is an invalid pattern, it must match ' + String(patternValidationRegex));
 	}
@@ -45,5 +45,17 @@ export function patternToRegex(...matchPatterns: readonly string[]): RegExp {
 		return allStarsRegex;
 	}
 
-	return new RegExp(matchPatterns.map(x => getRawRegex(x)).join('|'));
+	return new RegExp(matchPatterns.map(x => getRawPatternRegex(x)).join('|'));
+}
+
+function getRawGlobRegex(globPattern: string): string {
+	return globPattern
+		.replace(/[|\\{}()[\]^$+*?.]/g, '\\$&') // Escape
+		.replace(/-/g, '\\x2d') // Escape
+		.replace(/\\\*/g, '.*')
+		.replace(/\\\?/g, '.{1}');
+}
+
+export function globToRegex(...globPatterns: readonly string[]): RegExp {
+	return new RegExp(globPatterns.map(x => getRawGlobRegex(x)).join('|'));
 }

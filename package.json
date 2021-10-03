@@ -26,7 +26,8 @@
 		"build": "tsc",
 		"prepare": "tsc --sourceMap false",
 		"test": "tsc && ava && xo",
-		"watch": "tsc --watch"
+		"watch": "tsc --watch",
+		"lint": "xo --fix"
 	},
 	"xo": {
 		"envs": [
