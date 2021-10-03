@@ -57,5 +57,10 @@ function getRawGlobRegex(globPattern: string): string {
 }
 
 export function globToRegex(...globPatterns: readonly string[]): RegExp {
+	// No pattern, match nothing https://stackoverflow.com/q/14115522/288906
+	if (globPatterns.length === 0) {
+		return /$./;
+	}
+
 	return new RegExp(globPatterns.map(x => getRawGlobRegex(x)).join('|'));
 }
