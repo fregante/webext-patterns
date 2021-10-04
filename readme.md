@@ -23,7 +23,10 @@ import {patternToRegex} from 'webext-patterns';
 ```
 
 ## Usage
-### patterns
+
+### Patterns
+
+Used by (…)
 
 ```js
 patternToRegex('http://*/*');
@@ -42,7 +45,10 @@ googleRegex.test('https://google.it/search'); // -> true
 googleRegex.test('https://google.de/search'); // -> false
 ```
 
-### globs
+### Globs
+
+Used by `include_globs`, etc, this needs to be extended a bit. How are globs different?
+
 ```js
 globToRegex('https://???.example.com/foo/*');
 // Returns /https:\/\/...\.example\.com\/foo\/.*/
