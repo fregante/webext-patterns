@@ -5,8 +5,6 @@
 
 > Tool to convert the [patterns](https://developer.chrome.com/extensions/match_patterns) and [globs](https://wiki.greasespot.net/Include_and_exclude_rules) of your WebExtension manifest to regex
 
-This might be incomplete. Please help me test it by adding more pattern and URLs to the [tests](./test.js).
-
 ## Install
 
 You can download the [standalone bundle](https://bundle.fregante.com/?pkg=webext-patterns) and include it in your `manifest.json`.
@@ -18,15 +16,21 @@ npm install webext-patterns
 ```
 
 ```js
-// This module is only offered as a ES Module
-import {patternToRegex} from 'webext-patterns';
+import {patternToRegex, globToRegex} from 'webext-patterns';
 ```
 
 ## Usage
 
-### Patterns
+The package offers 2 exports:
 
-Used by (…)
+- `patternToRegex`, for [patterns](https://developer.chrome.com/extensions/match_patterns), which are used by manifest permissions and content scripts’ `matches`
+- `globToRegex`, for [globs](https://wiki.greasespot.net/Include_and_exclude_rules), which are used by additional, userscripts-compatible filters like the content scripts’ `include_globs` and `exclude_globs`.
+
+⚠️ `globToRegex` is less strict than `patternToRegex`, please report any issues/incongruencies you might encounter.
+
+Help me test it by adding more pattern and URLs to the tests: [patterns](./patterns.test.js), [globs](./globs.test.js).
+
+### `patternToRegex`
 
 ```js
 patternToRegex('http://*/*');
@@ -36,7 +40,7 @@ const gmailRegex = patternToRegex('*://mail.google.com/*');
 gmailRegex.test('https://mail.google.com/a/b/c'); // -> true
 gmailRegex.test('https://photos.google.com/a/b/c'); // -> false
 
-// Also accepts an array of patterns and returns a single regex
+// Also accepts multiple patterns and returns a single regex
 const googleRegex = patternToRegex(
 	'https://google.com/*',
 	'https://google.it/*'
@@ -45,9 +49,7 @@ googleRegex.test('https://google.it/search'); // -> true
 googleRegex.test('https://google.de/search'); // -> false
 ```
 
-### Globs
-
-Used by `include_globs`, etc, this needs to be extended a bit. How are globs different?
+### `globToRegex`
 
 ```js
 globToRegex('https://???.example.com/foo/*');
@@ -57,7 +59,7 @@ const gmailRegex = globToRegex('*://mai?.google.com/*');
 gmailRegex.test('https://mail.google.com/a/b/c'); // -> true
 gmailRegex.test('https://photos.google.com/a/b/c'); // -> false
 
-// Also accepts an array of patterns and returns a single regex
+// Also accepts multiple globs and returns a single regex
 const googleRegex = globToRegex(
 	'*google.com*',
 	'*google.it*'
