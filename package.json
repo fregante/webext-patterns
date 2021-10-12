@@ -31,7 +31,8 @@
 		"prepare": "tsc --sourceMap false",
 		"test": "tsc && ava && xo",
 		"watch": "tsc --watch",
-		"lint": "xo --fix"
+		"lint": "xo",
+		"fix": "xo --fix"
 	},
 	"xo": {
 		"envs": [
