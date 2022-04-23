@@ -26,6 +26,16 @@ shouldMatch.set('*google.com*', [
 	'https://google.com/',
 ]);
 
+shouldMatch.set('*go*ogle.com*', [
+	'https://google.com/',
+	'https://go123ogle.com/',
+]);
+
+shouldMatch.set('*go???ogle.com*', [
+	'https://google.com/',
+	'https://go123ogle.com/',
+]);
+
 for (const [glob, urls] of shouldMatch) {
 	test(testMatch, glob, urls);
 }

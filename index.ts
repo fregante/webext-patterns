@@ -53,7 +53,7 @@ export function patternToRegex(...matchPatterns: readonly string[]): RegExp {
 function getRawGlobRegex(globPattern: string): string {
 	return '^' + escapeStringRegexp(globPattern)
 		.replace(/\\\*/g, '.*')
-		.replace(/\\\?/g, '.') + '$';
+		.replace(/\\\?/g, '.?') + '$';
 }
 
 export function globToRegex(...globPatterns: readonly string[]): RegExp {
