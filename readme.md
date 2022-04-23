@@ -53,7 +53,7 @@ googleRegex.test('https://google.de/search'); // -> false
 
 ```js
 globToRegex('https://???.example.com/foo/*');
-// Returns /https:\/\/...\.example\.com\/foo\/.*/
+// Returns /^https:\/\/...\.example\.com\/foo\/.*$/
 
 const gmailRegex = globToRegex('*://mai?.google.com/*');
 gmailRegex.test('https://mail.google.com/a/b/c'); // -> true
