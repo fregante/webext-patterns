@@ -34,6 +34,7 @@ shouldMatch.set('*go*ogle.com*', [
 shouldMatch.set('*go???ogle.com*', [
 	'https://google.com/',
 	'https://go123ogle.com/',
+	'https://thegooooogle.com.uk/',
 ]);
 
 for (const [glob, urls] of shouldMatch) {
@@ -53,6 +54,15 @@ const shouldExclude = new Map();
 
 shouldExclude.set('*bar*', [
 	'http://www.google.com/foo',
+]);
+shouldExclude.set('https://???.example.com/foo/*', [
+	'https://ww.example.com/foo/bar',
+	'https://t.e.example.com/foo/', // Not sure about this
+]);
+
+shouldExclude.set('*nytimes.com/???s/*', [
+	'https://wwwnytimes.com/arts/index.html', // Not sure about this
+	'https://www.nytimes.com/s123/index.html',
 ]);
 
 for (const [glob, urls] of shouldExclude) {
