@@ -53,8 +53,7 @@ export function patternToRegex(...matchPatterns: readonly string[]): RegExp {
 }
 
 // The parens are required by .split() to preserve the symbols
-// Captures consecutive wildcards as one
-const globSymbols = /([?]|[*]+)/;
+const globSymbols = /([?*]+)/;
 function splitReplace(part: string, index: number) {
 	if (part === '') {
 		return ''; // Shortcut for speed
@@ -66,11 +65,11 @@ function splitReplace(part: string, index: number) {
 	}
 
 	// Else: Symbol
-	if (part.includes('*')) { // Can be more than one
+	if (part.includes('*')) { // Can be more than one and it swallows surrounding question marks
 		return '.*';
 	}
 
-	return isFirefox ? '.' : '.?';
+	return [...part].map(() => isFirefox ? '.' : '.?').join('');
 }
 
 function getRawGlobRegex(glob: string): string {
@@ -83,7 +82,8 @@ function getRawGlobRegex(glob: string): string {
 	// Drop "start with anything" and "end with anything" sequences because they're the default for regex
 	return ('^' + regexString + '$')
 		.replace(/^[.][*]/, '')
-		.replace(/[.][*]$/, '');
+		.replace(/[.][*]$/, '')
+		.replace(/^[$]$/, '.+'); // Catch `*` and `*`
 }
 
 export function globToRegex(...globs: readonly string[]): RegExp {
