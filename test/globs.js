@@ -1,5 +1,5 @@
 import test from 'ava';
-import {globToRegex} from './index.js';
+import {globToRegex} from '../index.js';
 
 function testMatch(t, glob, matching) {
 	const regex = globToRegex(glob);
@@ -18,16 +18,21 @@ function testExclude(t, glob, matching) {
 testMatch.title = (_, glob, url) => `${glob} should match ${url}`;
 testExclude.title = (_, glob, url) => `${glob} should not match ${url}`;
 
-// Pulled from https://developer.chrome.com/docs/extensions/mv3/content_scripts/#matchAndGlob
 const globs = new Map();
 globs.set('https://???.example.com/foo/*', [[
 	// Matching
 	'https://www.example.com/foo/bar',
 	'https://the.example.com/foo/',
+	'https://ww.example.com/foo/bar',
 ], [
 	// Not matching
-	'https://ww.example.com/foo/bar',
 	'https://t.e.example.com/foo',
+]]);
+
+globs.set('*props[]=a&props[]=b', [[
+	'https://example.com/?props[]=a&props[]=b',
+], [
+	'https://example.com/?props[]=b&props[]=a',
 ]]);
 
 globs.set('*nytimes.com/???s/*', [[
@@ -46,8 +51,10 @@ globs.set('*go*ogle.com*', [[
 
 globs.set('*go???ogle.com*', [[
 	'https://go123ogle.com/',
-], [
 	'https://go12ogle.com/',
+	'https://google.com/',
+], [
+	'https://go1234ogle.com/',
 ]]);
 
 globs.set('*bar*', [[

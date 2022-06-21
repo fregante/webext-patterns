@@ -8,7 +8,7 @@
 	"content_scripts": [
 		{
 			"matches": ["*://*/*"],
-			"include_globs":["*.com/404/*"],
+			"include_globs":["*exa????.com*"],
 			"js": ["content.js"]
 		}
 	]

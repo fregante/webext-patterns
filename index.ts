@@ -1,3 +1,5 @@
+import escapeStringRegexp from 'escape-string-regexp';
+
 // Copied from https://github.com/mozilla/gecko-dev/blob/073cc24f53d0cf31403121d768812146e597cc9d/toolkit/components/extensions/schemas/manifest.json#L487-L491
 export const patternValidationRegex = /^(https?|wss?|file|ftp|\*):\/\/(\*|\*\.[^*/]+|[^*/]+)\/.*$|^file:\/\/\/.*$|^resource:\/\/(\*|\*\.[^*/]+|[^*/]+)\/.*$|^about:/;
 
@@ -48,16 +50,39 @@ export function patternToRegex(...matchPatterns: readonly string[]): RegExp {
 	return new RegExp(matchPatterns.map(x => getRawPatternRegex(x)).join('|'));
 }
 
-function getRawGlobRegex(glob: string): string {
-	let regexString = glob;
-	regexString = regexString.startsWith('*') ? regexString.replace(/^[*]+/, '') : '^' + regexString;
-	regexString = regexString.endsWith('*') ? regexString.replace(/[*]+$/, '') : regexString + '$';
+// The parens are required by .split() to preserve the symbols
+// Captures consecutive wildcards as one
+const globSymbols = /([?]|[*]+)/;
+function splitReplace(part: string, index: number) {
+	if (part === '') {
+		return ''; // Shortcut for speed
+	}
 
-	return regexString
-		.replace(/[/]/g, '[/]') // Escape slashes
-		.replace(/[.]/g, '[.]') // Escape dots
-		.replace(/[*]+/g, '.*') // Wildcard
-		.replace(/[?]/g, '.'); // Single character
+	if (index % 2 === 0) {
+		// Raw text, escape it
+		return escapeStringRegexp(part);
+	}
+
+	// Else: Symbol
+	if (part.includes('*')) { // Can be more than one
+		return '.*';
+	}
+
+	if (isFirefox) {
+		return '.';
+	}
+
+	return '.?';
+}
+
+function getRawGlobRegex(glob: string): string {
+	return glob
+		.split(globSymbols)
+		// eslint-disable-next-line unicorn/no-array-callback-reference -- tis ok 🤫
+		.map(splitReplace)
+		.join('')
+		.replace(/^([.][*])?/, match => match === '' ? '^' : '')
+		.replace(/([.][*])?$/, match => match === '' ? '$' : '');
 }
 
 export function globToRegex(...globs: readonly string[]): RegExp {

@@ -29,6 +29,9 @@ The package offers 2 exports:
 - `patternToRegex`, for [patterns](https://developer.chrome.com/extensions/match_patterns), which are used by manifest permissions and content scripts’ `matches`
 - `globToRegex`, for [globs](https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/manifest.json/content_scripts#globs), which are used by additional, userscripts-compatible filters like the content scripts’ `include_globs` and `exclude_globs`.
 
+> **Note**
+> Firefox and Chrome handle globs very slighly differently. `webext-patterns` defaults to Chrome’s logic, but if it detects a Firefox userAgent it will produce a Firefox-compatible regex.
+
 ### `patternToRegex`
 
 ```js
