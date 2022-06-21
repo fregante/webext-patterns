@@ -29,7 +29,7 @@ import {patternToRegex} from 'webext-patterns';
 
 ```js
 patternToRegex('http://*/*');
-// Returns /^http:[/][/]?.+[/].+$/
+// Returns /^http:[/][/][^/]+[/].+$/
 
 globToRegex('*.example.com');
 // Returns /\.example\.com$/
@@ -45,7 +45,7 @@ Accepts any number of `string` arguments and returns a single regex to match all
 
 ```js
 patternToRegex('http://*/*');
-// Returns /^http:[/][/]?.+[/].+$/
+// Returns /^http:[/][/][^/]+[/].+$/
 
 const gmailRegex = patternToRegex('*://mail.google.com/*');
 gmailRegex.test('https://mail.google.com/a/b/c'); // -> true
