@@ -27,7 +27,7 @@ import {patternToRegex} from 'webext-patterns';
 The package offers 2 exports:
 
 - `patternToRegex`, for [patterns](https://developer.chrome.com/extensions/match_patterns), which are used by manifest permissions and content scripts’ `matches`
-- `globToRegex`, for [globs](https://wiki.greasespot.net/Include_and_exclude_rules), which are used by additional, userscripts-compatible filters like the content scripts’ `include_globs` and `exclude_globs`.
+- `globToRegex`, for [globs](https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/manifest.json/content_scripts#globs), which are used by additional, userscripts-compatible filters like the content scripts’ `include_globs` and `exclude_globs`.
 
 ### `patternToRegex`
 
