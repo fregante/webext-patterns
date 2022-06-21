@@ -24,6 +24,13 @@ import {patternToRegex} from 'webext-patterns';
 
 ## Usage
 
+The package offers 2 exports:
+
+- `patternToRegex`, for [patterns](https://developer.chrome.com/extensions/match_patterns), which are used by manifest permissions and content scripts’ `matches`
+- `globToRegex`, for [globs](https://wiki.greasespot.net/Include_and_exclude_rules), which are used by additional, userscripts-compatible filters like the content scripts’ `include_globs` and `exclude_globs`.
+
+### `patternToRegex`
+
 ```js
 patternToRegex('http://*/*');
 // Returns /^http:\/\/?.+\/.+$/
@@ -32,7 +39,7 @@ const gmailRegex = patternToRegex('*://mail.google.com/*');
 gmailRegex.test('https://mail.google.com/a/b/c'); // -> true
 gmailRegex.test('https://photos.google.com/a/b/c'); // -> false
 
-// Also accepts an array of patterns and returns a single regex
+// Also accepts multiple patterns and returns a single regex
 const googleRegex = patternToRegex(
 	'https://google.com/*',
 	'https://google.it/*'
@@ -41,9 +48,35 @@ googleRegex.test('https://google.it/search'); // -> true
 googleRegex.test('https://google.de/search'); // -> false
 ```
 
+### `globToRegex`
+
+```js
+globToRegex('https://???.example.com/foo/*');
+// Returns /^https:[/][/]...[.]example[.]com[/]foo[/]/
+
+globToRegex('*.example.com');
+// Returns /[.]example[.]com$/
+
+const gmailRegex = globToRegex('*://mai?.google.com/*');
+gmailRegex.test('https://mail.google.com/a/b/c'); // -> true
+gmailRegex.test('https://photos.google.com/a/b/c'); // -> false
+
+// Also accepts multiple globs and returns a single regex
+const googleRegex = globToRegex(
+	'*google.com*',
+	'*google.it*'
+);
+googleRegex.test('https://google.it/search'); // -> true
+googleRegex.test('https://google.de/search'); // -> false
+```
+
 ## API
 
 #### patternToRegex(pattern1, pattern2, etc)
+
+Accepts any number of `string` arguments and returns a single regex to match all of them.
+
+#### globToRegex(pattern1, pattern2, etc)
 
 Accepts any number of `string` arguments and returns a single regex to match all of them.
 

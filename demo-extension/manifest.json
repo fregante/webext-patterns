@@ -1,0 +1,15 @@
+{
+	"manifest_version": 2,
+	"version": "1",
+	"name": "webext-patterns",
+	"background": {
+		"scripts": ["background.js"]
+	},
+	"content_scripts": [
+		{
+			"matches": ["*://*/*"],
+			"include_globs":["*.com/404/*"],
+			"js": ["content.js"]
+		}
+	]
+}

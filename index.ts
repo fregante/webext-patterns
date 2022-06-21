@@ -6,7 +6,7 @@ const isFirefox = typeof navigator === 'object' && navigator.userAgent.includes(
 export const allStarsRegex = isFirefox ? /^(https?|wss?):[/][/][^/]+([/].*)?$/ : /^https?:[/][/][^/]+([/].*)?$/;
 export const allUrlsRegex = /^(https?|file|ftp):[/]+/;
 
-function getRawRegex(matchPattern: string): string {
+function getRawPatternRegex(matchPattern: string): string {
 	if (!patternValidationRegex.test(matchPattern)) {
 		throw new Error(matchPattern + ' is an invalid pattern, it must match ' + String(patternValidationRegex));
 	}
@@ -45,5 +45,26 @@ export function patternToRegex(...matchPatterns: readonly string[]): RegExp {
 		return allStarsRegex;
 	}
 
-	return new RegExp(matchPatterns.map(x => getRawRegex(x)).join('|'));
+	return new RegExp(matchPatterns.map(x => getRawPatternRegex(x)).join('|'));
+}
+
+function getRawGlobRegex(glob: string): string {
+	let regexString = glob;
+	regexString = regexString.startsWith('*') ? regexString.replace(/^[*]+/, '') : '^' + regexString;
+	regexString = regexString.endsWith('*') ? regexString.replace(/[*]+$/, '') : regexString + '$';
+
+	return regexString
+		.replace(/[/]/g, '[/]') // Escape slashes
+		.replace(/[.]/g, '[.]') // Escape dots
+		.replace(/[*]+/g, '.*') // Wildcard
+		.replace(/[?]/g, '.'); // Single character
+}
+
+export function globToRegex(...globs: readonly string[]): RegExp {
+	// No glob, match anything; `include_globs: []` is the default
+	if (globs.length === 0) {
+		return /.*/;
+	}
+
+	return new RegExp(globs.map(x => getRawGlobRegex(x)).join('|'));
 }
