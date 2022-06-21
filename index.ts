@@ -1,12 +1,16 @@
+import escapeStringRegexp from 'escape-string-regexp';
+
 // Copied from https://github.com/mozilla/gecko-dev/blob/073cc24f53d0cf31403121d768812146e597cc9d/toolkit/components/extensions/schemas/manifest.json#L487-L491
 export const patternValidationRegex = /^(https?|wss?|file|ftp|\*):\/\/(\*|\*\.[^*/]+|[^*/]+)\/.*$|^file:\/\/\/.*$|^resource:\/\/(\*|\*\.[^*/]+|[^*/]+)\/.*$|^about:/;
 
 const isFirefox = typeof navigator === 'object' && navigator.userAgent.includes('Firefox/');
 
-export const allStarsRegex = isFirefox ? /^(https?|wss?):[/][/][^/]+([/].*)?$/ : /^https?:[/][/][^/]+([/].*)?$/;
+export const allStarsRegex = isFirefox
+	? /^(https?|wss?):[/][/][^/]+([/].*)?$/
+	: /^https?:[/][/][^/]+([/].*)?$/;
 export const allUrlsRegex = /^(https?|file|ftp):[/]+/;
 
-function getRawRegex(matchPattern: string): string {
+function getRawPatternRegex(matchPattern: string): string {
 	if (!patternValidationRegex.test(matchPattern)) {
 		throw new Error(matchPattern + ' is an invalid pattern, it must match ' + String(patternValidationRegex));
 	}
@@ -45,5 +49,49 @@ export function patternToRegex(...matchPatterns: readonly string[]): RegExp {
 		return allStarsRegex;
 	}
 
-	return new RegExp(matchPatterns.map(x => getRawRegex(x)).join('|'));
+	return new RegExp(matchPatterns.map(x => getRawPatternRegex(x)).join('|'));
+}
+
+// The parens are required by .split() to preserve the symbols
+const globSymbols = /([?*]+)/;
+function splitReplace(part: string, index: number) {
+	if (part === '') {
+		// Shortcut for speed
+		return '';
+	}
+
+	if (index % 2 === 0) {
+		// Raw text, escape it
+		return escapeStringRegexp(part);
+	}
+
+	// Else: Symbol
+	if (part.includes('*')) { // Can be more than one and it swallows surrounding question marks
+		return '.*';
+	}
+
+	return [...part].map(() => isFirefox ? '.' : '.?').join('');
+}
+
+function getRawGlobRegex(glob: string): string {
+	const regexString = glob
+		.split(globSymbols)
+		// eslint-disable-next-line unicorn/no-array-callback-reference -- tis ok 🤫
+		.map(splitReplace)
+		.join('');
+
+	// Drop "start with anything" and "end with anything" sequences because they're the default for regex
+	return ('^' + regexString + '$')
+		.replace(/^[.][*]/, '')
+		.replace(/[.][*]$/, '')
+		.replace(/^[$]$/, '.+'); // Catch `*` and `*`
+}
+
+export function globToRegex(...globs: readonly string[]): RegExp {
+	// No glob, match anything; `include_globs: []` is the default
+	if (globs.length === 0) {
+		return /.*/;
+	}
+
+	return new RegExp(globs.map(x => getRawGlobRegex(x)).join('|'));
 }

@@ -3,7 +3,7 @@
 [badge-gzip]: https://img.shields.io/bundlephobia/minzip/webext-patterns.svg?label=gzipped
 [link-bundlephobia]: https://bundlephobia.com/result?p=webext-patterns
 
-> Tool to convert the [patterns](https://developer.chrome.com/extensions/match_patterns) and [globs](https://wiki.greasespot.net/Include_and_exclude_rules) of your WebExtension manifest to regex
+> Tool to convert the [patterns](https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/manifest.json/content_scripts#globs) of your WebExtension manifest to regex
 
 This might be incomplete. Please help me test it by adding more pattern and URLs to the [tests](./test.js).
 
@@ -24,15 +24,34 @@ import {patternToRegex} from 'webext-patterns';
 
 ## Usage
 
+> **Note**
+> Firefox and Chrome handle globs very slighly differently. `webext-patterns` defaults to Chrome’s logic, but if it detects a Firefox userAgent it will produce a Firefox-compatible regex.
+
 ```js
 patternToRegex('http://*/*');
-// Returns /^http:\/\/?.+\/.+$/
+// Returns /^http:[/][/][^/]+[/].+$/
+
+globToRegex('*.example.com');
+// Returns /\.example\.com$/
+```
+
+## API
+
+#### patternToRegex(pattern1, pattern2, etc)
+
+Accepts any number of `string` arguments and returns a single regex to match all of them.
+
+[Match patterns](https://developer.chrome.com/extensions/match_patterns) are used in the manifest’s permissions and content scripts’ `matches` and `exclude_matches` array.
+
+```js
+patternToRegex('http://*/*');
+// Returns /^http:[/][/][^/]+[/].+$/
 
 const gmailRegex = patternToRegex('*://mail.google.com/*');
 gmailRegex.test('https://mail.google.com/a/b/c'); // -> true
 gmailRegex.test('https://photos.google.com/a/b/c'); // -> false
 
-// Also accepts an array of patterns and returns a single regex
+// Also accepts multiple patterns and returns a single regex
 const googleRegex = patternToRegex(
 	'https://google.com/*',
 	'https://google.it/*'
@@ -41,11 +60,29 @@ googleRegex.test('https://google.it/search'); // -> true
 googleRegex.test('https://google.de/search'); // -> false
 ```
 
-## API
-
-#### patternToRegex(pattern1, pattern2, etc)
+#### globToRegex(pattern1, pattern2, etc)
 
 Accepts any number of `string` arguments and returns a single regex to match all of them.
+
+[Globs](https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/manifest.json/content_scripts#globs) are used in the manifest’s content scripts’ `include_globs` and `exclude_globs` arrays.
+
+```js
+globToRegex('*.example.co?');
+// Returns /\.example\.co.?$/ in Firefox
+// Returns /\.example\.co.$/ everywhere else
+
+const gmailRegex = globToRegex('*://mai?.google.com/*');
+gmailRegex.test('https://mail.google.com/a/b/c'); // -> true
+gmailRegex.test('https://photos.google.com/a/b/c'); // -> false
+
+// Also accepts multiple globs and returns a single regex
+const googleRegex = globToRegex(
+	'*google.com*',
+	'*google.it*'
+);
+googleRegex.test('https://google.it/search'); // -> true
+googleRegex.test('https://google.de/search'); // -> false
+```
 
 ## Related
 

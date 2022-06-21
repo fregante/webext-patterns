@@ -1,5 +1,5 @@
 import test from 'ava';
-import {patternToRegex} from './index.js';
+import {patternToRegex} from '../index.js';
 
 function macro(t, pattern, matching) {
 	const regex = patternToRegex(pattern);
