@@ -56,7 +56,8 @@ export function patternToRegex(...matchPatterns: readonly string[]): RegExp {
 const globSymbols = /([?*]+)/;
 function splitReplace(part: string, index: number) {
 	if (part === '') {
-		return ''; // Shortcut for speed
+		// Shortcut for speed
+		return '';
 	}
 
 	if (index % 2 === 0) {
