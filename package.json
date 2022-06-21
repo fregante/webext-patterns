@@ -28,11 +28,11 @@
 	],
 	"scripts": {
 		"build": "tsc",
+		"fix": "xo --fix",
+		"lint": "xo",
 		"prepare": "tsc --sourceMap false",
 		"test": "tsc && ava && xo",
-		"watch": "tsc --watch",
-		"lint": "xo",
-		"fix": "xo --fix"
+		"watch": "tsc --watch"
 	},
 	"xo": {
 		"envs": [
@@ -42,6 +42,9 @@
 		"rules": {
 			"unicorn/better-regex": "off"
 		}
+	},
+	"dependencies": {
+		"escape-string-regexp": "^5.0.0"
 	},
 	"devDependencies": {
 		"@sindresorhus/tsconfig": "^3.0.1",
@@ -60,8 +63,5 @@
 				"https://example.com/"
 			]
 		}
-	},
-	"dependencies": {
-		"escape-string-regexp": "^5.0.0"
 	}
 }

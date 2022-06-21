@@ -5,7 +5,9 @@ export const patternValidationRegex = /^(https?|wss?|file|ftp|\*):\/\/(\*|\*\.[^
 
 const isFirefox = typeof navigator === 'object' && navigator.userAgent.includes('Firefox/');
 
-export const allStarsRegex = isFirefox ? /^(https?|wss?):[/][/][^/]+([/].*)?$/ : /^https?:[/][/][^/]+([/].*)?$/;
+export const allStarsRegex = isFirefox
+	? /^(https?|wss?):[/][/][^/]+([/].*)?$/
+	: /^https?:[/][/][^/]+([/].*)?$/;
 export const allUrlsRegex = /^(https?|file|ftp):[/]+/;
 
 function getRawPatternRegex(matchPattern: string): string {
@@ -68,11 +70,7 @@ function splitReplace(part: string, index: number) {
 		return '.*';
 	}
 
-	if (isFirefox) {
-		return '.';
-	}
-
-	return '.?';
+	return isFirefox ? '.' : '.?';
 }
 
 function getRawGlobRegex(glob: string): string {
