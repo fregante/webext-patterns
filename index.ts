@@ -74,13 +74,16 @@ function splitReplace(part: string, index: number) {
 }
 
 function getRawGlobRegex(glob: string): string {
-	return glob
+	const regexString = glob
 		.split(globSymbols)
 		// eslint-disable-next-line unicorn/no-array-callback-reference -- tis ok 🤫
 		.map(splitReplace)
-		.join('')
-		.replace(/^([.][*])?/, match => match === '' ? '^' : '')
-		.replace(/([.][*])?$/, match => match === '' ? '$' : '');
+		.join('');
+
+	// Drop "start with anything" and "end with anything" sequences because they're the default for regex
+	return ('^' + regexString + '$')
+		.replace(/^[.][*]/, '')
+		.replace(/[.][*]$/, '');
 }
 
 export function globToRegex(...globs: readonly string[]): RegExp {
