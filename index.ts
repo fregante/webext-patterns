@@ -95,3 +95,17 @@ export function globToRegex(...globs: readonly string[]): RegExp {
 
 	return new RegExp(globs.map(x => getRawGlobRegex(x)).join('|'));
 }
+
+export function excludeDuplicatePatterns(matchPatterns: readonly string[]): string[] {
+	if (matchPatterns.includes('<all_urls>')) {
+		return ['<all_urls>'];
+	}
+
+	if (matchPatterns.includes('*://*/*')) {
+		return ['*://*/*'];
+	}
+
+	return matchPatterns.filter(possibleSubset => !matchPatterns.some(possibleSuperset =>
+		possibleSubset !== possibleSuperset && patternToRegex(possibleSuperset).test(possibleSubset),
+	));
+}

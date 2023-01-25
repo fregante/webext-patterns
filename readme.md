@@ -24,16 +24,19 @@ import {patternToRegex} from 'webext-patterns';
 
 ## Usage
 
-> **Note**
-> Firefox and Chrome handle globs very slighly differently. `webext-patterns` defaults to Chrome’s logic, but if it detects a Firefox userAgent it will produce a Firefox-compatible regex.
-
 ```js
 patternToRegex('http://*/*');
 // Returns /^http:[/][/][^/]+[/].+$/
 
 globToRegex('*.example.com');
 // Returns /\.example\.com$/
+
+excludeDuplicatePatterns(['https://*.google.com/*', 'https://google.com/*']);
+// Returns ['https://*.google.com/*']
 ```
+
+> **Note**
+> Firefox and Chrome handle patterns very slighly differently. `webext-patterns` defaults to Chrome’s logic, but if it detects a Firefox userAgent it will produce a Firefox-compatible regex.
 
 ## API
 
@@ -82,6 +85,19 @@ const googleRegex = globToRegex(
 );
 googleRegex.test('https://google.it/search'); // -> true
 googleRegex.test('https://google.de/search'); // -> false
+```
+
+#### excludeDuplicatePatterns([pattern1, pattern2, etc])
+
+Accepts an array of patterns and returns a filtered array without the patterns that are already covered by others. For example `"https://*/*"` already covers all "https" URLs, so having `"https://google.com/*"` in the array won't make any difference and therefore it's dropped.
+
+```js
+excludeDuplicatePatterns([
+	"https://*/*",
+	"https://google.com/*",
+	"https://*.example.com/*",
+]);
+// Returns ["https://*/*"]
 ```
 
 ## Related
