@@ -15,22 +15,26 @@ function getRawPatternRegex(matchPattern: string): string {
 		throw new Error(matchPattern + ' is an invalid pattern, it must match ' + String(patternValidationRegex));
 	}
 
-	let [, protocol, host, pathname] = matchPattern.split(/(^[^:]+:[/][/])([^/]+)?/);
+	// Host undefined for file:///
+	let [, protocol, host = '', pathname] = matchPattern.split(/(^[^:]+:[/][/])([^/]+)?/);
 
-	protocol = protocol
+	protocol = protocol!
 		.replace('*', isFirefox ? '(https?|wss?)' : 'https?') // Protocol wildcard
-		.replace(/[/]/g, '[/]'); // Escape slashes
+		.replaceAll(/[/]/g, '[/]'); // Escape slashes
 
-	host = (host ?? '') // Undefined for file:///
-		.replace(/^[*][.]/, '([^/]+.)*') // Initial wildcard
-		.replace(/^[*]$/, '[^/]+') // Only wildcard
-		.replace(/[.]/g, '[.]') // Escape dots
-		.replace(/[*]$/g, '[^.]+'); // Last wildcard
+	if (host === '*') {
+		host = '[^/]+';
+	} else if (host) {
+		host = host
+			.replace(/^[*][.]/, '([^/]+.)*') // Initial wildcard
+			.replaceAll(/[.]/g, '[.]') // Escape dots
+			.replace(/[*]$/, '[^.]+'); // Last wildcard
+	}
 
-	pathname = pathname
-		.replace(/[/]/g, '[/]') // Escape slashes
-		.replace(/[.]/g, '[.]') // Escape dots
-		.replace(/[*]/g, '.*'); // Any wildcard
+	pathname = pathname!
+		.replaceAll(/[/]/g, '[/]') // Escape slashes
+		.replaceAll(/[.]/g, '[.]') // Escape dots
+		.replaceAll(/[*]/g, '.*'); // Any wildcard
 
 	return '^' + protocol + host + '(' + pathname + ')?$';
 }
