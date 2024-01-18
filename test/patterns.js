@@ -1,5 +1,5 @@
 import test from 'ava';
-import {patternToRegex, isValidPattern, assertValidPattern} from '../index.js';
+import {patternToRegex, isValidPattern, assertValidPattern, doesUrlMatchPatterns} from '../index.js';
 
 function macro(t, pattern, matching) {
 	const regex = patternToRegex(pattern);
@@ -7,6 +7,7 @@ function macro(t, pattern, matching) {
 		t.regex(url, regex);
 		t.true(isValidPattern(pattern));
 		t.notThrows(() => assertValidPattern(pattern));
+		t.true(doesUrlMatchPatterns(url, 'http://never.example.com/*', pattern, 'http://nope.example.com/*'));
 	}
 }
 
