@@ -3,17 +3,25 @@ import escapeStringRegexp from 'escape-string-regexp';
 // Copied from https://github.com/mozilla/gecko-dev/blob/073cc24f53d0cf31403121d768812146e597cc9d/toolkit/components/extensions/schemas/manifest.json#L487-L491
 export const patternValidationRegex = /^(https?|wss?|file|ftp|\*):\/\/(\*|\*\.[^*/]+|[^*/]+)\/.*$|^file:\/\/\/.*$|^resource:\/\/(\*|\*\.[^*/]+|[^*/]+)\/.*$|^about:/;
 
-const isFirefox = typeof navigator === 'object' && navigator.userAgent.includes('Firefox/');
+const isFirefox = globalThis.navigator?.userAgent.includes('Firefox/');
 
 export const allStarsRegex = isFirefox
 	? /^(https?|wss?):[/][/][^/]+([/].*)?$/
 	: /^https?:[/][/][^/]+([/].*)?$/;
 export const allUrlsRegex = /^(https?|file|ftp):[/]+/;
 
-function getRawPatternRegex(matchPattern: string): string {
-	if (!patternValidationRegex.test(matchPattern)) {
+export function assertValidPattern(matchPattern: string): void {
+	if (!isValidPattern(matchPattern)) {
 		throw new Error(matchPattern + ' is an invalid pattern, it must match ' + String(patternValidationRegex));
 	}
+}
+
+export function isValidPattern(matchPattern: string): boolean {
+	return matchPattern === '<all_urls>' || patternValidationRegex.test(matchPattern);
+}
+
+function getRawPatternRegex(matchPattern: string): string {
+	assertValidPattern(matchPattern);
 
 	// Host undefined for file:///
 	let [, protocol, host = '', pathname] = matchPattern.split(/(^[^:]+:[/][/])([^/]+)?/);

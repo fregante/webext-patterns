@@ -19,7 +19,13 @@ npm install webext-patterns
 
 ```js
 // This module is only offered as a ES Module
-import {patternToRegex} from 'webext-patterns';
+import {
+	patternToRegex,
+	globToRegex,
+	excludeDuplicatePatterns
+	assertValidPattern,
+	isValidPattern,
+} from 'webext-patterns';
 ```
 
 ## Usage
@@ -33,6 +39,12 @@ globToRegex('*.example.com');
 
 excludeDuplicatePatterns(['https://*.google.com/*', 'https://google.com/*']);
 // Returns ['https://*.google.com/*']
+
+assertValidPattern('https://google.*/*');
+// Throws an error because the pattern is invalid
+
+isValidPattern('https://*.google.com/*');
+// Returns true
 ```
 
 > **Note**
@@ -98,6 +110,24 @@ excludeDuplicatePatterns([
 	"https://*.example.com/*",
 ]);
 // Returns ["https://*/*"]
+```
+
+#### assertValidPattern(pattern)
+
+Accepts a pattern and throws an error if it's invalid.
+
+```js
+assertValidPattern('https://google.*/*');
+// Throws an error because the pattern is invalid
+```
+
+#### isValidPattern(pattern)
+
+Accepts a pattern and returns `true` if it's valid.
+
+```js
+isValidPattern('https://google.*/*');
+// Returns false
 ```
 
 ## Related
