@@ -40,9 +40,6 @@ globToRegex('*.example.com');
 excludeDuplicatePatterns(['https://*.google.com/*', 'https://google.com/*']);
 // Returns ['https://*.google.com/*']
 
-doesUrlMatchPatterns('https://google.com/', ['https://*.google.com/*', '*://example.com/*']);
-// Returns true
-
 assertValidPattern('https://google.*/*');
 // Throws an error because the pattern is invalid
 
