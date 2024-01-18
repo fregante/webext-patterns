@@ -1,10 +1,12 @@
 import test from 'ava';
-import {patternToRegex} from '../index.js';
+import {patternToRegex, isValidPattern, assertValidPattern} from '../index.js';
 
 function macro(t, pattern, matching) {
 	const regex = patternToRegex(pattern);
 	for (const url of matching) {
 		t.regex(url, regex);
+		t.true(isValidPattern(pattern));
+		t.notThrows(() => assertValidPattern(pattern));
 	}
 }
 
@@ -65,6 +67,7 @@ test('Should not match anything if no patterns are passed', t => {
 });
 
 const invalidPatterns = [
+	'https://google.*/*', // The TLD cannot be a wildcard
 	'https://mozilla.org', // No path
 	'https://*zilla.org/', // "*" in host must be the only character or be followed by "."
 	'http*://mozilla.org/', // "*" in scheme must be the only character
@@ -74,7 +77,13 @@ const invalidPatterns = [
 ];
 for (const pattern of invalidPatterns) {
 	test('Invalid pattern: ' + pattern, t => {
+		t.false(isValidPattern(pattern));
+
 		t.throws(() => patternToRegex(pattern), {
+			message: /is an invalid pattern, it must match/,
+		});
+
+		t.throws(() => assertValidPattern(pattern), {
 			message: /is an invalid pattern, it must match/,
 		});
 	});
