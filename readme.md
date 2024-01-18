@@ -23,6 +23,7 @@ import {
 	patternToRegex,
 	globToRegex,
 	excludeDuplicatePatterns
+	doesUrlMatchPatterns,
 	assertValidPattern,
 	isValidPattern,
 } from 'webext-patterns';
@@ -110,6 +111,15 @@ excludeDuplicatePatterns([
 	"https://*.example.com/*",
 ]);
 // Returns ["https://*/*"]
+```
+
+#### doesUrlMatchPatterns(url, ...patterns)
+
+Accepts a URL and any number of patterns and returns `true` if the URL matches any of the patterns. This is a convenience method that wraps `patternToRegex` for single use. If you plan on testing multiple URLs to the same pattern, it's better to convert the patterns to a regex once and reuse that.
+
+```js
+doesUrlMatchPatterns('https://google.com/', ['https://*.google.com/*', '*://example.com/*']);
+// Returns true
 ```
 
 #### assertValidPattern(pattern)
