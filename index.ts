@@ -19,6 +19,7 @@ export function assertValidPattern(matchPattern: string): void {
 export function isValidPattern(matchPattern: string): boolean {
 	return matchPattern === '<all_urls>' || patternValidationRegex.test(matchPattern);
 }
+
 function getRawPatternRegex(matchPattern: string): string {
 	assertValidPattern(matchPattern);
 
