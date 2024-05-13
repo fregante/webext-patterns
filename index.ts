@@ -21,6 +21,8 @@ export function isValidPattern(matchPattern: string): boolean {
 }
 
 export function doesUrlMatchPatterns(url: string, ...matchPattern: string[]): boolean {
+	matchPattern = matchPattern.flat();
+
 	if (matchPattern.includes('<all_urls>') && allUrlsRegex.test(url)) {
 		return true;
 	}
@@ -126,7 +128,9 @@ export function globToRegex(...globs: readonly string[]): RegExp {
 	return new RegExp(globs.map(x => getRawGlobRegex(x)).join('|'));
 }
 
-export function excludeDuplicatePatterns(matchPatterns: readonly string[]): string[] {
+export function excludeDuplicatePatterns(...matchPatterns: readonly string[]): string[] {
+	matchPatterns = matchPatterns.flat();
+
 	if (matchPatterns.includes('<all_urls>')) {
 		return ['<all_urls>'];
 	}
