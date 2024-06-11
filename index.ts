@@ -50,12 +50,12 @@ function getRawPatternRegex(matchPattern: string): string {
 
 	if (host === '*') {
 		host = '[^/]+';
-	} else if (host) {
-		host = host
-			.replace(/^[*][.]/, '([^/]+.)*') // Initial wildcard
-			.replaceAll(/[.]/g, '[.]') // Escape dots
-			.replace(/[*]$/, '[^.]+'); // Last wildcard
 	}
+
+	host &&= host
+		.replace(/^[*][.]/, '([^/]+.)*') // Initial wildcard
+		.replaceAll(/[.]/g, '[.]') // Escape dots
+		.replace(/[*]$/, '[^.]+'); // Last wildcard
 
 	pathname = pathname!
 		.replaceAll(/[/]/g, '[/]') // Escape slashes
