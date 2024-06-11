@@ -1,5 +1,7 @@
 import test from 'ava';
-import {patternToRegex, isValidPattern, assertValidPattern, doesUrlMatchPatterns} from '../index.js';
+import {
+	patternToRegex, isValidPattern, assertValidPattern, doesUrlMatchPatterns,
+} from '../index.js';
 
 function macro(t, pattern, matching) {
 	const regex = patternToRegex(pattern);
