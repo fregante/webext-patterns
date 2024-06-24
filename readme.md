@@ -3,9 +3,7 @@
 [badge-gzip]: https://img.shields.io/bundlephobia/minzip/webext-patterns.svg?label=gzipped
 [link-bundlephobia]: https://bundlephobia.com/result?p=webext-patterns
 
-> Tool to convert the [patterns](https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/manifest.json/content_scripts#globs) of your WebExtension manifest to regex
-
-This might be incomplete. Please help me test it by adding more pattern and URLs to the [tests](./test.js).
+> Utilities for [patterns](https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/manifest.json/content_scripts#matching_url_patterns) and globs for WebExtensions
 
 ## Install
 
@@ -18,7 +16,6 @@ npm install webext-patterns
 ```
 
 ```js
-// This module is only offered as a ES Module
 import {
 	patternToRegex,
 	globToRegex,
@@ -142,12 +139,10 @@ isValidPattern('https://google.*/*');
 
 ## Related
 
-### Permissions
-
 - [webext-permissions](https://github.com/fregante/webext-permissions) - Get any optional permissions that users have granted you.
-- [webext-options-sync](https://github.com/fregante/webext-options-sync) - Helps you manage and autosave your extension's options. Chrome and Firefox.
-- [webext-storage-cache](https://github.com/fregante/webext-storage-cache) - Map-like promised cache storage with expiration. Chrome and Firefox
-- [webext-detect-page](https://github.com/fregante/webext-detect-page) - Detects where the current browser extension code is being run. Chrome and Firefox.
+- [webext-options-sync](https://github.com/fregante/webext-options-sync) - Helps you manage and autosave your extension's options.
+- [webext-storage-cache](https://github.com/fregante/webext-storage-cache) - Map-like promised cache storage with expiration.
+- [webext-detect-page](https://github.com/fregante/webext-detect-page) - Detects where the current browser extension code is being run.
 - [Awesome-WebExtensions](https://github.com/fregante/Awesome-WebExtensions) - A curated list of awesome resources for WebExtensions development.
 - [More…](https://github.com/fregante/webext-fun)
 
