@@ -119,6 +119,10 @@ doesUrlMatchPatterns('https://google.com/', 'https://*.google.com/*', '*://examp
 // Returns true
 ```
 
+#### findMatchingPatterns(url, ...patterns)
+
+Accepts a URL and any number of patterns and returns an array of the patterns that match the URL. It returns an empty array if none of the patterns match the URL.
+
 #### assertValidPattern(pattern)
 
 Accepts a pattern and throws an error if it's invalid.

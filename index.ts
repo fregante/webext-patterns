@@ -20,22 +20,26 @@ export function isValidPattern(matchPattern: string): boolean {
 	return matchPattern === '<all_urls>' || patternValidationRegex.test(matchPattern);
 }
 
-export function doesUrlMatchPatterns(url: string, ...matchPattern: string[]): boolean {
-	if (matchPattern.includes('<all_urls>') && allUrlsRegex.test(url)) {
+export function doesUrlMatchPatterns(url: string, ...patterns: string[]): boolean {
+	if (patterns.includes('<all_urls>') && allUrlsRegex.test(url)) {
 		return true;
 	}
 
-	if (matchPattern.includes('*://*/*') && allStarsRegex.test(url)) {
+	if (patterns.includes('*://*/*') && allStarsRegex.test(url)) {
 		return true;
 	}
 
-	for (const pattern of matchPattern) {
+	for (const pattern of patterns) {
 		if (patternToRegex(pattern).test(url)) {
 			return true;
 		}
 	}
 
 	return false;
+}
+
+export function findMatchingPatterns(url: string, ...patterns: string[]): string[] {
+	return patterns.filter(pattern => doesUrlMatchPatterns(url, pattern));
 }
 
 function getRawPatternRegex(matchPattern: string): string {
