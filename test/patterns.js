@@ -86,11 +86,11 @@ for (const pattern of invalidPatterns) {
 		t.false(isValidPattern(pattern));
 
 		t.throws(() => patternToRegex(pattern), {
-			message: /is an invalid pattern, it must match/,
+			message: /is an invalid pattern. See/,
 		});
 
 		t.throws(() => assertValidPattern(pattern), {
-			message: /is an invalid pattern, it must match/,
+			message: /is an invalid pattern. See/,
 		});
 	});
 }
@@ -102,7 +102,7 @@ const invalidPatternsThatPass = [
 for (const pattern of invalidPatternsThatPass) {
 	test.failing('Invalid pattern: ' + pattern, t => {
 		t.throws(() => patternToRegex(pattern), {
-			message: /is an invalid pattern, it must match/,
+			message: /is an invalid pattern. See/,
 		});
 	});
 }

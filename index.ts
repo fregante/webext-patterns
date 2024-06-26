@@ -12,7 +12,7 @@ export const allUrlsRegex = /^(https?|file|ftp):[/]+/;
 
 export function assertValidPattern(matchPattern: string): void {
 	if (!isValidPattern(matchPattern)) {
-		throw new Error(matchPattern + ' is an invalid pattern, it must match ' + String(patternValidationRegex));
+		throw new Error(matchPattern + ' is an invalid pattern. See https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Match_patterns for more info.');
 	}
 }
 
