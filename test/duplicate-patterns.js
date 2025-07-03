@@ -4,6 +4,15 @@ import {excludeDuplicatePatterns} from '../index.js';
 test('excludeDuplicatePatterns', t => {
 	t.deepEqual(
 		excludeDuplicatePatterns([
+			'https://*.example.com/*',
+			'https://*.example.com/*',
+		]),
+		['https://*.example.com/*'],
+		'identical patterns should be detected',
+	);
+
+	t.deepEqual(
+		excludeDuplicatePatterns([
 			'http://neverssl.com/*',
 			'https://*.example.com/*',
 			'<all_urls>',
@@ -55,3 +64,4 @@ test('excludeDuplicatePatterns', t => {
 		'A pathname star should drop all other same-origin origins',
 	);
 });
+

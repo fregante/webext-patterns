@@ -139,7 +139,15 @@ export function excludeDuplicatePatterns(matchPatterns: readonly string[]): stri
 		return ['*://*/*'];
 	}
 
-	return matchPatterns.filter(possibleSubset => !matchPatterns.some(possibleSuperset =>
-		possibleSubset !== possibleSuperset && patternToRegex(possibleSuperset).test(possibleSubset),
-	));
+	// Cover identical patterns
+	const uniquePatterns = [...new Set(matchPatterns)];
+
+	return uniquePatterns.filter(possibleSubset =>
+		// Keep if there are no matches
+		!uniquePatterns.some(possibleSuperset =>
+			// Don't compare to self
+			possibleSubset !== possibleSuperset
+			// Drop if it's a subset
+			&& patternToRegex(possibleSuperset).test(possibleSubset),
+		));
 }
