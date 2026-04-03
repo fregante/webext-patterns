@@ -1,14 +1,14 @@
 import escapeStringRegexp from 'escape-string-regexp';
 
 // Copied from https://github.com/mozilla/gecko-dev/blob/073cc24f53d0cf31403121d768812146e597cc9d/toolkit/components/extensions/schemas/manifest.json#L487-L491
-export const patternValidationRegex = /^(https?|wss?|file|ftp|\*):\/\/(\*|\*\.[^*/]+|[^*/]+)\/.*$|^file:\/\/\/.*$|^resource:\/\/(\*|\*\.[^*/]+|[^*/]+)\/.*$|^about:/;
+export const patternValidationRegex = /^(https?|wss?|file|ftp|\*):\/\/(\*|\*\.[^*\/]+|[^*\/]+)\/.*$|^file:\/\/\/.*$|^resource:\/\/(\*|\*\.[^*\/]+|[^*\/]+)\/.*$|^about:/v;
 
 const isFirefox = globalThis.navigator?.userAgent.includes('Firefox/');
 
 export const allStarsRegex = isFirefox
-	? /^(https?|wss?):[/][/][^/]+([/].*)?$/
-	: /^https?:[/][/][^/]+([/].*)?$/;
-export const allUrlsRegex = /^(https?|file|ftp):[/]+/;
+	? /^(https?|wss?):[\/][\/][^\/]+([\/].*)?$/v
+	: /^https?:[\/][\/][^\/]+([\/].*)?$/v;
+export const allUrlsRegex = /^(https?|file|ftp):[\/]+/v;
 
 export function assertValidPattern(matchPattern: string): void {
 	if (!isValidPattern(matchPattern)) {
@@ -46,25 +46,25 @@ function getRawPatternRegex(matchPattern: string): string {
 	assertValidPattern(matchPattern);
 
 	// Host undefined for file:///
-	let [, protocol, host = '', pathname] = matchPattern.split(/(^[^:]+:[/][/])([^/]+)?/);
+	let [, protocol, host = '', pathname] = matchPattern.split(/(^[^:]+:[\/][\/])([^\/]+)?/v);
 
 	protocol = protocol!
 		.replace('*', isFirefox ? '(https?|wss?)' : 'https?') // Protocol wildcard
-		.replaceAll(/[/]/g, '[/]'); // Escape slashes
+		.replaceAll(/[\/]/gv, String.raw`[\/]`); // Escape slashes
 
 	if (host === '*') {
-		host = '[^/]+';
+		host = String.raw`[^\/]+`;
 	}
 
 	host &&= host
-		.replace(/^[*][.]/, '([^/]+.)*') // Initial wildcard
-		.replaceAll(/[.]/g, '[.]') // Escape dots
-		.replace(/[*]$/, '[^.]+'); // Last wildcard
+		.replace(/^[*][.]/v, String.raw`([^\/]+.)*`) // Initial wildcard
+		.replaceAll(/[.]/gv, '[.]') // Escape dots
+		.replace(/[*]$/v, '[^.]+'); // Last wildcard
 
 	pathname = pathname!
-		.replaceAll(/[/]/g, '[/]') // Escape slashes
-		.replaceAll(/[.]/g, '[.]') // Escape dots
-		.replaceAll(/[*]/g, '.*'); // Any wildcard
+		.replaceAll(/[\/]/gv, String.raw`[\/]`) // Escape slashes
+		.replaceAll(/[.]/gv, '[.]') // Escape dots
+		.replaceAll(/[*]/gv, '.*'); // Any wildcard
 
 	return '^' + protocol + host + '(' + pathname + ')?$';
 }
@@ -72,7 +72,7 @@ function getRawPatternRegex(matchPattern: string): string {
 export function patternToRegex(...matchPatterns: readonly string[]): RegExp {
 	// No pattern, match nothing https://stackoverflow.com/q/14115522/288906
 	if (matchPatterns.length === 0) {
-		return /$./;
+		return /$./v;
 	}
 
 	if (matchPatterns.includes('<all_urls>')) {
@@ -83,11 +83,11 @@ export function patternToRegex(...matchPatterns: readonly string[]): RegExp {
 		return allStarsRegex;
 	}
 
-	return new RegExp(matchPatterns.map(x => getRawPatternRegex(x)).join('|'));
+	return new RegExp(matchPatterns.map(x => getRawPatternRegex(x)).join('|'), 'v');
 }
 
 // The parens are required by .split() to preserve the symbols
-const globSymbols = /([?*]+)/;
+const globSymbols = /([?*]+)/v;
 function splitReplace(part: string, index: number) {
 	if (part === '') {
 		// Shortcut for speed
@@ -116,18 +116,18 @@ function getRawGlobRegex(glob: string): string {
 
 	// Drop "start with anything" and "end with anything" sequences because they're the default for regex
 	return ('^' + regexString + '$')
-		.replace(/^[.][*]/, '')
-		.replace(/[.][*]$/, '')
-		.replace(/^[$]$/, '.+'); // Catch `*` and `*`
+		.replace(/^[.][*]/v, '')
+		.replace(/[.][*]$/v, '')
+		.replace(/^[$]$/v, '.+'); // Catch `*` and `*`
 }
 
 export function globToRegex(...globs: readonly string[]): RegExp {
 	// No glob, match anything; `include_globs: []` is the default
 	if (globs.length === 0) {
-		return /.*/;
+		return /.*/v;
 	}
 
-	return new RegExp(globs.map(x => getRawGlobRegex(x)).join('|'));
+	return new RegExp(globs.map(x => getRawGlobRegex(x)).join('|'), 'v');
 }
 
 export function removeRedundantPatterns(matchPatterns: readonly string[]): string[] {
@@ -148,6 +148,5 @@ export function removeRedundantPatterns(matchPatterns: readonly string[]): strin
 			// Don't compare to self
 			possibleSubset !== possibleSuperset
 			// Drop if it's a subset
-			&& patternToRegex(possibleSuperset).test(possibleSubset),
-		));
+			&& patternToRegex(possibleSuperset).test(possibleSubset)));
 }

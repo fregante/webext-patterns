@@ -35,26 +35,18 @@
 		"test": "tsc && ava && xo",
 		"watch": "tsc --watch"
 	},
-	"xo": {
-		"envs": [
-			"browser",
-			"webextensions"
-		],
-		"rules": {
-			"unicorn/better-regex": "off"
-		}
-	},
 	"dependencies": {
 		"escape-string-regexp": "^5.0.0"
 	},
 	"devDependencies": {
-		"@sindresorhus/tsconfig": "^5.0.0",
-		"@types/chrome": "0.0.268",
-		"ava": "^6.1.3",
-		"sinon": "^18.0.0",
-		"type-fest": "^4.20.0",
-		"typescript": "^5.4.5",
-		"xo": "^0.58.0"
+		"@sindresorhus/tsconfig": "^8.1.0",
+		"@types/chrome": "^0.1.39",
+		"ava": "^7.0.0",
+		"globals": "^17.4.0",
+		"sinon": "^21.0.3",
+		"type-fest": "^5.5.0",
+		"typescript": "^6.0.2",
+		"xo": "^2.0.2"
 	},
 	"engines": {
 		"node": ">=18"
