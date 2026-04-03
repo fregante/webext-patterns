@@ -20,7 +20,7 @@ export function isValidPattern(matchPattern: string): boolean {
 	return matchPattern === '<all_urls>' || patternValidationRegex.test(matchPattern);
 }
 
-export function doesUrlMatchPatterns(url: string, ...patterns: string[]): boolean {
+export function testPatterns(url: string, patterns: string[]): boolean {
 	if (patterns.includes('<all_urls>') && allUrlsRegex.test(url)) {
 		return true;
 	}
@@ -38,8 +38,8 @@ export function doesUrlMatchPatterns(url: string, ...patterns: string[]): boolea
 	return false;
 }
 
-export function findMatchingPatterns(url: string, ...patterns: string[]): string[] {
-	return patterns.filter(pattern => doesUrlMatchPatterns(url, pattern));
+export function getMatchingPatterns(url: string, patterns: string[]): string[] {
+	return patterns.filter(pattern => testPatterns(url, [pattern]));
 }
 
 function getRawPatternRegex(matchPattern: string): string {
@@ -130,7 +130,7 @@ export function globToRegex(...globs: readonly string[]): RegExp {
 	return new RegExp(globs.map(x => getRawGlobRegex(x)).join('|'));
 }
 
-export function excludeDuplicatePatterns(matchPatterns: readonly string[]): string[] {
+export function removeRedundantPatterns(matchPatterns: readonly string[]): string[] {
 	if (matchPatterns.includes('<all_urls>')) {
 		return ['<all_urls>'];
 	}
