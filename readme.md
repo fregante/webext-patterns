@@ -19,7 +19,7 @@ npm install webext-patterns
 import {
 	patternToRegex,
 	globToRegex,
-	excludeOverlappingPatterns,
+	removeRedundantPatterns,
 	testPatterns,
 	assertValidPattern,
 	isValidPattern,
@@ -35,7 +35,7 @@ patternToRegex('http://*/*');
 globToRegex('*.example.com');
 // Returns /\.example\.com$/
 
-excludeOverlappingPatterns(['https://*.google.com/*', 'https://google.com/*']);
+removeRedundantPatterns(['https://*.google.com/*', 'https://google.com/*']);
 // Returns ['https://*.google.com/*']
 
 assertValidPattern('https://google.*/*');
@@ -97,12 +97,12 @@ googleRegex.test('https://google.it/search'); // -> true
 googleRegex.test('https://google.de/search'); // -> false
 ```
 
-#### excludeOverlappingPatterns([pattern1, pattern2, etc])
+#### removeRedundantPatterns([pattern1, pattern2, etc])
 
 Accepts an array of patterns and returns a filtered array without the patterns that are already covered by others. For example `"https://*/*"` already covers all "https" URLs, so having `"https://google.com/*"` in the array won't make any difference and therefore it's dropped.
 
 ```js
-excludeOverlappingPatterns([
+removeRedundantPatterns([
 	"https://*/*",
 	"https://google.com/*",
 	"https://*.example.com/*",
@@ -119,7 +119,7 @@ testPatterns('https://google.com/', ['https://*.google.com/*', '*://example.com/
 // Returns true
 ```
 
-#### filterMatchingPatterns(url, patterns)
+#### getMatchingPatterns(url, patterns)
 
 Accepts a URL and an array of patterns and returns an array of the patterns that match the URL. It returns an empty array if none of the patterns match the URL.
 
