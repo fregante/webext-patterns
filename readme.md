@@ -20,7 +20,7 @@ import {
 	patternToRegex,
 	globToRegex,
 	excludeOverlappingPatterns,
-	testPattern,
+	testPatterns,
 	assertValidPattern,
 	isValidPattern,
 } from 'webext-patterns';
@@ -110,12 +110,12 @@ excludeOverlappingPatterns([
 // Returns ["https://*/*"]
 ```
 
-#### testPattern(url, pattern)
+#### testPatterns(url, patterns)
 
-Accepts a URL and a pattern and returns `true` if the URL matches the pattern. This is a convenience method that wraps `patternToRegex` for single use. If you plan on testing multiple URLs against the same pattern, it's better to convert the pattern to a regex once and reuse that.
+Accepts a URL and an array of patterns and returns `true` if the URL matches any of the patterns. This is a convenience method that wraps `patternToRegex` for single use. If you plan on testing multiple URLs against the same patterns, it's better to convert the patterns to a regex once and reuse that.
 
 ```js
-testPattern('https://google.com/', 'https://*.google.com/*');
+testPatterns('https://google.com/', ['https://*.google.com/*', '*://example.com/*']);
 // Returns true
 ```
 
