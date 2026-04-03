@@ -1,9 +1,9 @@
 import test from 'ava';
-import {excludeDuplicatePatterns} from '../index.js';
+import {excludeOverlappingPatterns} from '../index.js';
 
-test('excludeDuplicatePatterns', t => {
+test('excludeOverlappingPatterns', t => {
 	t.deepEqual(
-		excludeDuplicatePatterns([
+		excludeOverlappingPatterns([
 			'https://*.example.com/*',
 			'https://*.example.com/*',
 		]),
@@ -12,7 +12,7 @@ test('excludeDuplicatePatterns', t => {
 	);
 
 	t.deepEqual(
-		excludeDuplicatePatterns([
+		excludeOverlappingPatterns([
 			'http://neverssl.com/*',
 			'https://*.example.com/*',
 			'<all_urls>',
@@ -24,7 +24,7 @@ test('excludeDuplicatePatterns', t => {
 	);
 
 	t.deepEqual(
-		excludeDuplicatePatterns([
+		excludeOverlappingPatterns([
 			'http://neverssl.com/*',
 			'https://*.example.com/*',
 			'*://*/*',
@@ -35,7 +35,7 @@ test('excludeDuplicatePatterns', t => {
 	);
 
 	t.deepEqual(
-		excludeDuplicatePatterns([
+		excludeOverlappingPatterns([
 			'http://*.example.com/*',
 			'https://*/*',
 			'https://fregante.com/*',
@@ -45,7 +45,7 @@ test('excludeDuplicatePatterns', t => {
 	);
 
 	t.deepEqual(
-		excludeDuplicatePatterns([
+		excludeOverlappingPatterns([
 			'https://git.example.com/*',
 			'https://*.example.com/*',
 			'https://example.com/*',
@@ -56,7 +56,7 @@ test('excludeDuplicatePatterns', t => {
 	);
 
 	t.deepEqual(
-		excludeDuplicatePatterns([
+		excludeOverlappingPatterns([
 			'https://git.example.com/*',
 			'https://git.example.com/fregante/*',
 		]),

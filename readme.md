@@ -19,8 +19,8 @@ npm install webext-patterns
 import {
 	patternToRegex,
 	globToRegex,
-	excludeDuplicatePatterns
-	doesUrlMatchPatterns,
+	excludeOverlappingPatterns,
+	testPattern,
 	assertValidPattern,
 	isValidPattern,
 } from 'webext-patterns';
@@ -35,7 +35,7 @@ patternToRegex('http://*/*');
 globToRegex('*.example.com');
 // Returns /\.example\.com$/
 
-excludeDuplicatePatterns(['https://*.google.com/*', 'https://google.com/*']);
+excludeOverlappingPatterns(['https://*.google.com/*', 'https://google.com/*']);
 // Returns ['https://*.google.com/*']
 
 assertValidPattern('https://google.*/*');
@@ -97,12 +97,12 @@ googleRegex.test('https://google.it/search'); // -> true
 googleRegex.test('https://google.de/search'); // -> false
 ```
 
-#### excludeDuplicatePatterns([pattern1, pattern2, etc])
+#### excludeOverlappingPatterns([pattern1, pattern2, etc])
 
 Accepts an array of patterns and returns a filtered array without the patterns that are already covered by others. For example `"https://*/*"` already covers all "https" URLs, so having `"https://google.com/*"` in the array won't make any difference and therefore it's dropped.
 
 ```js
-excludeDuplicatePatterns([
+excludeOverlappingPatterns([
 	"https://*/*",
 	"https://google.com/*",
 	"https://*.example.com/*",
@@ -110,18 +110,18 @@ excludeDuplicatePatterns([
 // Returns ["https://*/*"]
 ```
 
-#### doesUrlMatchPatterns(url, ...patterns)
+#### testPattern(url, pattern)
 
-Accepts a URL and any number of patterns and returns `true` if the URL matches any of the patterns. This is a convenience method that wraps `patternToRegex` for single use. If you plan on testing multiple URLs to the same pattern, it's better to convert the patterns to a regex once and reuse that.
+Accepts a URL and a pattern and returns `true` if the URL matches the pattern. This is a convenience method that wraps `patternToRegex` for single use. If you plan on testing multiple URLs against the same pattern, it's better to convert the pattern to a regex once and reuse that.
 
 ```js
-doesUrlMatchPatterns('https://google.com/', 'https://*.google.com/*', '*://example.com/*');
+testPattern('https://google.com/', 'https://*.google.com/*');
 // Returns true
 ```
 
-#### findMatchingPatterns(url, ...patterns)
+#### filterMatchingPatterns(url, patterns)
 
-Accepts a URL and any number of patterns and returns an array of the patterns that match the URL. It returns an empty array if none of the patterns match the URL.
+Accepts a URL and an array of patterns and returns an array of the patterns that match the URL. It returns an empty array if none of the patterns match the URL.
 
 #### assertValidPattern(pattern)
 

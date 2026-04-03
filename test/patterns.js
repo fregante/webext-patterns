@@ -1,6 +1,6 @@
 import test from 'ava';
 import {
-	patternToRegex, isValidPattern, assertValidPattern, doesUrlMatchPatterns, findMatchingPatterns,
+	patternToRegex, isValidPattern, assertValidPattern, testPattern, filterMatchingPatterns,
 } from '../index.js';
 
 function macro(t, pattern, matching) {
@@ -9,10 +9,10 @@ function macro(t, pattern, matching) {
 		t.regex(url, regex);
 		t.true(isValidPattern(pattern));
 		t.notThrows(() => assertValidPattern(pattern));
-		t.false(doesUrlMatchPatterns(url, 'http://never.example.com/*'));
-		t.true(doesUrlMatchPatterns(url, 'http://never.example.com/*', pattern, 'http://nope.example.com/*'));
-		t.deepEqual(findMatchingPatterns(url, 'http://never.example.com/*'), []);
-		t.deepEqual(findMatchingPatterns(url, 'http://never.example.com/*', pattern), [pattern]);
+		t.false(testPattern(url, 'http://never.example.com/*'));
+		t.true(testPattern(url, pattern));
+		t.deepEqual(filterMatchingPatterns(url, ['http://never.example.com/*']), []);
+		t.deepEqual(filterMatchingPatterns(url, ['http://never.example.com/*', pattern]), [pattern]);
 	}
 }
 

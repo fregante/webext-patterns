@@ -20,26 +20,20 @@ export function isValidPattern(matchPattern: string): boolean {
 	return matchPattern === '<all_urls>' || patternValidationRegex.test(matchPattern);
 }
 
-export function doesUrlMatchPatterns(url: string, ...patterns: string[]): boolean {
-	if (patterns.includes('<all_urls>') && allUrlsRegex.test(url)) {
+export function testPattern(url: string, pattern: string): boolean {
+	if (pattern === '<all_urls>' && allUrlsRegex.test(url)) {
 		return true;
 	}
 
-	if (patterns.includes('*://*/*') && allStarsRegex.test(url)) {
+	if (pattern === '*://*/*' && allStarsRegex.test(url)) {
 		return true;
 	}
 
-	for (const pattern of patterns) {
-		if (patternToRegex(pattern).test(url)) {
-			return true;
-		}
-	}
-
-	return false;
+	return patternToRegex(pattern).test(url);
 }
 
-export function findMatchingPatterns(url: string, ...patterns: string[]): string[] {
-	return patterns.filter(pattern => doesUrlMatchPatterns(url, pattern));
+export function filterMatchingPatterns(url: string, patterns: string[]): string[] {
+	return patterns.filter(pattern => testPattern(url, pattern));
 }
 
 function getRawPatternRegex(matchPattern: string): string {
@@ -130,7 +124,7 @@ export function globToRegex(...globs: readonly string[]): RegExp {
 	return new RegExp(globs.map(x => getRawGlobRegex(x)).join('|'));
 }
 
-export function excludeDuplicatePatterns(matchPatterns: readonly string[]): string[] {
+export function excludeOverlappingPatterns(matchPatterns: readonly string[]): string[] {
 	if (matchPatterns.includes('<all_urls>')) {
 		return ['<all_urls>'];
 	}
