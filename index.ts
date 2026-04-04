@@ -1,5 +1,3 @@
-import escapeStringRegexp from 'escape-string-regexp';
-
 // Copied from https://github.com/mozilla/gecko-dev/blob/5836a062726f715fda621338a17b51aff30d0a8c/toolkit/components/extensions/schemas/manifest.json#L729-L741
 export const patternValidationRegex = /^(https?|wss?|file|ftp|\*):\/\/(\*|\*\.[^*/:]+|[^*/:]+)\/.*$|^file:\/\/\/.*$|^about:/;
 
@@ -96,7 +94,8 @@ function splitReplace(part: string, index: number) {
 
 	if (index % 2 === 0) {
 		// Raw text, escape it
-		return escapeStringRegexp(part);
+		// eslint-disable-next-line no-use-extend-native/no-use-extend-native -- TODO: Drop after https://github.com/dustinspecker/eslint-plugin-no-use-extend-native/issues/157
+		return RegExp.escape(part);
 	}
 
 	// Else: Symbol

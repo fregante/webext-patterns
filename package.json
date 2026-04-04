@@ -35,9 +35,6 @@
 		"test": "tsc && vitest run && xo",
 		"watch": "tsc --watch"
 	},
-	"dependencies": {
-		"escape-string-regexp": "^5.0.0"
-	},
 	"devDependencies": {
 		"@sindresorhus/tsconfig": "^8.1.0",
 		"@types/chrome": "^0.1.39",
@@ -49,7 +46,7 @@
 		"xo": "^2.0.2"
 	},
 	"engines": {
-		"node": ">=18"
+		"node": ">=24"
 	},
 	"webExt": {
 		"sourceDir": "demo-extension",
