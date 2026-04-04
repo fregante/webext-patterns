@@ -1,20 +1,22 @@
-import {test, expect} from 'vitest';
+import test from 'ava';
 import {
 	patternToRegex, isValidPattern, assertValidPattern, testPatterns, getMatchingPatterns,
 } from '../index.js';
 
-function macro(pattern, matching) {
+function macro(t, pattern, matching) {
 	const regex = patternToRegex(pattern);
 	for (const url of matching) {
-		expect(url).toMatch(regex);
-		expect(isValidPattern(pattern)).toBe(true);
-		expect(() => assertValidPattern(pattern)).not.toThrow();
-		expect(testPatterns(url, ['http://never.example.com/*'])).toBe(false);
-		expect(testPatterns(url, ['http://never.example.com/*', pattern, 'http://nope.example.com/*'])).toBe(true);
-		expect(getMatchingPatterns(url, ['http://never.example.com/*'])).toEqual([]);
-		expect(getMatchingPatterns(url, ['http://never.example.com/*', pattern])).toEqual([pattern]);
+		t.regex(url, regex);
+		t.true(isValidPattern(pattern));
+		t.notThrows(() => assertValidPattern(pattern));
+		t.false(testPatterns(url, ['http://never.example.com/*']));
+		t.true(testPatterns(url, ['http://never.example.com/*', pattern, 'http://nope.example.com/*']));
+		t.deepEqual(getMatchingPatterns(url, ['http://never.example.com/*']), []);
+		t.deepEqual(getMatchingPatterns(url, ['http://never.example.com/*', pattern]), [pattern]);
 	}
 }
+
+macro.title = (_, pattern) => pattern;
 
 // Patterns pulled from https://developer.chrome.com/extensions/match_patterns
 const map = new Map();
@@ -63,11 +65,11 @@ map.set('<all_urls>', [
 ]);
 
 for (const [pattern, urls] of map) {
-	test(pattern, () => macro(pattern, urls));
+	test(macro, pattern, urls);
 }
 
-test('Should not match anything if no patterns are passed', () => {
-	expect('https://mail.google.com/foobar').not.toMatch(patternToRegex());
+test('Should not match anything if no patterns are passed', t => {
+	t.notRegex('https://mail.google.com/foobar', patternToRegex());
 });
 
 const invalidPatterns = [
@@ -80,12 +82,16 @@ const invalidPatterns = [
 	'file://*', // Empty path: this should be "file:///*".
 ];
 for (const pattern of invalidPatterns) {
-	test('Invalid pattern: ' + pattern, () => {
-		expect(isValidPattern(pattern)).toBe(false);
+	test('Invalid pattern: ' + pattern, t => {
+		t.false(isValidPattern(pattern));
 
-		expect(() => patternToRegex(pattern)).toThrow(/is an invalid pattern. See/);
+		t.throws(() => patternToRegex(pattern), {
+			message: /is an invalid pattern. See/,
+		});
 
-		expect(() => assertValidPattern(pattern)).toThrow(/is an invalid pattern. See/);
+		t.throws(() => assertValidPattern(pattern), {
+			message: /is an invalid pattern. See/,
+		});
 	});
 }
 
@@ -94,7 +100,9 @@ const invalidPatternsThatPass = [
 	'https://mozilla.org:80/', // Host must not include a port number
 ];
 for (const pattern of invalidPatternsThatPass) {
-	test.fails('Invalid pattern: ' + pattern, () => {
-		expect(() => patternToRegex(pattern)).toThrow(/is an invalid pattern. See/);
+	test.failing('Invalid pattern: ' + pattern, t => {
+		t.throws(() => patternToRegex(pattern), {
+			message: /is an invalid pattern. See/,
+		});
 	});
 }
