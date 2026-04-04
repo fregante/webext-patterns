@@ -1,22 +1,19 @@
-import test from 'ava';
+import {test, expect} from 'vitest';
 import {globToRegex} from '../index.js';
 
-function testMatch(t, glob, matching) {
+function testMatch(glob, matching) {
 	const regex = globToRegex(glob);
 	for (const url of matching) {
-		t.regex(url, regex);
+		expect(url).toMatch(regex);
 	}
 }
 
-function testExclude(t, glob, matching) {
+function testExclude(glob, matching) {
 	const regex = globToRegex(glob);
 	for (const url of matching) {
-		t.notRegex(url, regex);
+		expect(url).not.toMatch(regex);
 	}
 }
-
-testMatch.title = (_, glob, url) => `${glob} should match ${url}`;
-testExclude.title = (_, glob, url) => `${glob} should not match ${url}`;
 
 const globs = new Map();
 globs.set('https://???.example.com/foo/*', [[
@@ -64,6 +61,6 @@ globs.set('*bar*', [[
 ]]);
 
 for (const [glob, [shouldMatchUrls, shouldNotMatchUrls]] of globs) {
-	test(testMatch, glob, shouldMatchUrls);
-	test(testExclude, glob, shouldNotMatchUrls);
+	test(`${glob} should match ${shouldMatchUrls}`, () => testMatch(glob, shouldMatchUrls));
+	test(`${glob} should not match ${shouldNotMatchUrls}`, () => testExclude(glob, shouldNotMatchUrls));
 }

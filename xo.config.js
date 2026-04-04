@@ -9,6 +9,11 @@ const xoConfig = [
 				...globals.webextensions,
 			},
 		},
+		rules: {
+			'unicorn/better-regex': 'off',
+			'require-unicode-regexp': 'off',
+			'unicorn/no-immediate-mutation': 'off',
+		},
 	},
 ];
 

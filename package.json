@@ -32,7 +32,7 @@
 		"fix": "xo --fix",
 		"lint": "xo",
 		"prepare": "tsc --sourceMap false",
-		"test": "tsc && ava && xo",
+		"test": "tsc && vitest run && xo",
 		"watch": "tsc --watch"
 	},
 	"dependencies": {
@@ -41,11 +41,11 @@
 	"devDependencies": {
 		"@sindresorhus/tsconfig": "^8.1.0",
 		"@types/chrome": "^0.1.39",
-		"ava": "^7.0.0",
 		"globals": "^17.4.0",
 		"sinon": "^21.0.3",
 		"type-fest": "^5.5.0",
 		"typescript": "^6.0.2",
+		"vitest": "^4.1.2",
 		"xo": "^2.0.2"
 	},
 	"engines": {
