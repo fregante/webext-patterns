@@ -76,6 +76,8 @@ const invalidPatterns = [
 	'https://mozilla.*.org/', // "*" in host must be at the start
 	'*://*', // Empty path: this should be "*://*/*".
 	'file://*', // Empty path: this should be "file:///*".
+	'resource://path/', // Unsupported scheme
+	'https://mozilla.org:80/', // Host must not include a port number
 ];
 for (const pattern of invalidPatterns) {
 	test('Invalid pattern: ' + pattern, () => {
@@ -84,15 +86,5 @@ for (const pattern of invalidPatterns) {
 		expect(() => patternToRegex(pattern)).toThrow(/is an invalid pattern. See/);
 
 		expect(() => assertValidPattern(pattern)).toThrow(/is an invalid pattern. See/);
-	});
-}
-
-const invalidPatternsThatPass = [
-	'resource://path/', // Unsupported scheme
-	'https://mozilla.org:80/', // Host must not include a port number
-];
-for (const pattern of invalidPatternsThatPass) {
-	test.fails('Invalid pattern: ' + pattern, () => {
-		expect(() => patternToRegex(pattern)).toThrow(/is an invalid pattern. See/);
 	});
 }
