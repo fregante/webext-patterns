@@ -9,9 +9,6 @@ const xoConfig = [
 				...globals.webextensions,
 			},
 		},
-		rules: {
-			'unicorn/better-regex': 'off',
-		},
 	},
 ];
 
