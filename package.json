@@ -46,7 +46,7 @@
 		"xo": "^2.0.2"
 	},
 	"engines": {
-		"node": ">=18"
+		"node": ">=24"
 	},
 	"webExt": {
 		"sourceDir": "demo-extension",

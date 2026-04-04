@@ -94,6 +94,7 @@ function splitReplace(part: string, index: number) {
 
 	if (index % 2 === 0) {
 		// Raw text, escape it
+		// eslint-disable-next-line no-use-extend-native/no-use-extend-native -- TODO: Drop after https://github.com/dustinspecker/eslint-plugin-no-use-extend-native/issues/157
 		return RegExp.escape(part);
 	}
 
