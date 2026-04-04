@@ -1,7 +1,7 @@
 import escapeStringRegexp from 'escape-string-regexp';
 
 // Copied from https://github.com/mozilla/gecko-dev/blob/073cc24f53d0cf31403121d768812146e597cc9d/toolkit/components/extensions/schemas/manifest.json#L487-L491
-export const patternValidationRegex = /^(https?|wss?|file|ftp|\*):\/\/(\*|\*\.[^*/]+|[^*/]+)\/.*$|^file:\/\/\/.*$|^resource:\/\/(\*|\*\.[^*/]+|[^*/]+)\/.*$|^about:/;
+export const patternValidationRegex = /^(https?|wss?|file|ftp|\*):\/\/(\*|\*\.[^*/:]+|[^*/:]+)\/.*$|^file:\/\/\/.*$|^about:/;
 
 const isFirefox = globalThis.navigator?.userAgent.includes('Firefox/');
 

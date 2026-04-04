@@ -92,7 +92,11 @@ const invalidPatternsThatPass = [
 	'https://mozilla.org:80/', // Host must not include a port number
 ];
 for (const pattern of invalidPatternsThatPass) {
-	test.fails('Invalid pattern: ' + pattern, () => {
+	test('Invalid pattern: ' + pattern, () => {
+		expect(isValidPattern(pattern)).toBe(false);
+
 		expect(() => patternToRegex(pattern)).toThrow(/is an invalid pattern. See/);
+
+		expect(() => assertValidPattern(pattern)).toThrow(/is an invalid pattern. See/);
 	});
 }
