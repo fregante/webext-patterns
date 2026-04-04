@@ -47,6 +47,9 @@ isValidPattern('https://*.google.com/*');
 > **Note**
 > Firefox and Chrome handle patterns very slighly differently. `webext-patterns` defaults to Chrome’s logic, but if it detects a Firefox userAgent it will produce a Firefox-compatible regex.
 
+> **Note**
+> This package uses `RegExp.escape`, which requires browsers from May 2025 and later.
+
 ## API
 
 #### patternToRegex(pattern1, pattern2, etc)

@@ -35,9 +35,6 @@
 		"test": "tsc && vitest run && xo",
 		"watch": "tsc --watch"
 	},
-	"dependencies": {
-		"escape-string-regexp": "^5.0.0"
-	},
 	"devDependencies": {
 		"@sindresorhus/tsconfig": "^8.1.0",
 		"@types/chrome": "^0.1.39",
