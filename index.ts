@@ -148,6 +148,5 @@ export function removeRedundantPatterns(matchPatterns: readonly string[]): strin
 			// Don't compare to self
 			possibleSubset !== possibleSuperset
 			// Drop if it's a subset
-			&& patternToRegex(possibleSuperset).test(possibleSubset),
-		));
+			&& patternToRegex(possibleSuperset).test(possibleSubset)));
 }
