@@ -47,13 +47,13 @@ globs.set('*bar*', [[
 ]]);
 
 for (const [glob, [shouldMatchUrls, shouldNotMatchUrls]] of globs) {
-	test(`${glob} should match ${String(shouldMatchUrls)}`, () => {
+	test(`${glob} should match expected URLs`, () => {
 		const regex = globToRegex(glob);
 		for (const url of shouldMatchUrls) {
 			expect(url).toMatch(regex);
 		}
 	});
-	test(`${glob} should not match ${String(shouldNotMatchUrls)}`, () => {
+	test(`${glob} should not match excluded URLs`, () => {
 		const regex = globToRegex(glob);
 		for (const url of shouldNotMatchUrls) {
 			expect(url).not.toMatch(regex);
