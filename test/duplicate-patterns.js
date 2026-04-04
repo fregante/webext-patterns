@@ -1,8 +1,8 @@
-import test from 'ava';
+import {test, assert} from 'vitest';
 import {removeRedundantPatterns} from '../index.js';
 
-test('removeRedundantPatterns', t => {
-	t.deepEqual(
+test('removeRedundantPatterns', () => {
+	assert.deepEqual(
 		removeRedundantPatterns([
 			'https://*.example.com/*',
 			'https://*.example.com/*',
@@ -11,7 +11,7 @@ test('removeRedundantPatterns', t => {
 		'identical patterns should be detected',
 	);
 
-	t.deepEqual(
+	assert.deepEqual(
 		removeRedundantPatterns([
 			'http://neverssl.com/*',
 			'https://*.example.com/*',
@@ -23,7 +23,7 @@ test('removeRedundantPatterns', t => {
 		'<all_urls> should catch all',
 	);
 
-	t.deepEqual(
+	assert.deepEqual(
 		removeRedundantPatterns([
 			'http://neverssl.com/*',
 			'https://*.example.com/*',
@@ -34,7 +34,7 @@ test('removeRedundantPatterns', t => {
 		'*://*/* should catch all',
 	);
 
-	t.deepEqual(
+	assert.deepEqual(
 		removeRedundantPatterns([
 			'http://*.example.com/*',
 			'https://*/*',
@@ -44,7 +44,7 @@ test('removeRedundantPatterns', t => {
 		'https://*/* should drop all other https origins',
 	);
 
-	t.deepEqual(
+	assert.deepEqual(
 		removeRedundantPatterns([
 			'https://git.example.com/*',
 			'https://*.example.com/*',
@@ -55,7 +55,7 @@ test('removeRedundantPatterns', t => {
 		'A subdomain star should drop all other same-domain origins',
 	);
 
-	t.deepEqual(
+	assert.deepEqual(
 		removeRedundantPatterns([
 			'https://git.example.com/*',
 			'https://git.example.com/fregante/*',
