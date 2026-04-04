@@ -1,9 +1,8 @@
-# webext-patterns [![][badge-gzip]][link-bundlephobia]
-
-[badge-gzip]: https://img.shields.io/bundlephobia/minzip/webext-patterns.svg?label=gzipped
-[link-bundlephobia]: https://bundlephobia.com/result?p=webext-patterns
+# webext-patterns 
 
 > Utilities for [patterns](https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/manifest.json/content_scripts#matching_url_patterns) and globs for WebExtensions
+
+**Sponsored by [PixieBrix](https://www.pixiebrix.com)** :tada:
 
 ## Install
 
