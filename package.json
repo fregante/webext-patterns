@@ -2,6 +2,31 @@
 	"name": "webext-patterns",
 	"version": "3.0.0",
 	"description": "Tool to convert the patterns and globs of your WebExtension manifest to regex",
+	"license": "MIT",
+	"repository": "fregante/webext-patterns",
+	"funding": "https://github.com/sponsors/fregante",
+	"author": "Federico Brigante <me@fregante.com> (https://fregante.com)",
+	"type": "module",
+	"exports": {
+		"types": "./distribution/index.d.ts",
+		"default": "./distribution/index.js"
+	},
+	"sideEffects": false,
+	"engines": {
+		"node": ">=24"
+	},
+	"scripts": {
+		"build": "tsc",
+		"fix": "xo --fix",
+		"lint": "xo",
+		"prepare": "tsc --sourceMap false",
+		"test": "tsc && vitest run && xo",
+		"watch": "tsc --watch"
+	},
+	"files": [
+		"distribution/index.js",
+		"distribution/index.d.ts"
+	],
 	"keywords": [
 		"browser",
 		"chrome",
@@ -16,25 +41,6 @@
 		"match",
 		"webext"
 	],
-	"repository": "fregante/webext-patterns",
-	"funding": "https://github.com/sponsors/fregante",
-	"license": "MIT",
-	"author": "Federico Brigante <me@fregante.com> (https://fregante.com)",
-	"type": "module",
-	"exports": "./distribution/index.js",
-	"types": "./distribution/index.d.ts",
-	"files": [
-		"distribution/index.js",
-		"distribution/index.d.ts"
-	],
-	"scripts": {
-		"build": "tsc",
-		"fix": "xo --fix",
-		"lint": "xo",
-		"prepare": "tsc --sourceMap false",
-		"test": "tsc && vitest run && xo",
-		"watch": "tsc --watch"
-	},
 	"devDependencies": {
 		"@sindresorhus/tsconfig": "^8.1.0",
 		"@types/chrome": "^0.3.5",
@@ -43,10 +49,7 @@
 		"type-fest": "^5.10.0",
 		"typescript": "^6.0.2",
 		"vitest": "^5.0.5",
-		"xo": "^2.0.2"
-	},
-	"engines": {
-		"node": ">=24"
+		"xo": "^5.0.1"
 	},
 	"webExt": {
 		"sourceDir": "demo-extension",
