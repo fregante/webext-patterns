@@ -18,6 +18,13 @@ const xoConfig = [
 		},
 	},
 	{
+		rules: {
+			// `[/]` is intentional: it avoids escaping and stays readable
+			'regexp/no-useless-character-class': 'off',
+			'unicorn/prefer-string-replace-all': 'off',
+		},
+	},
+	{
 		// Tests need to cover `http:` patterns
 		files: ['test/**'],
 		rules: {

@@ -4,9 +4,9 @@ export const patternValidationRegex = /^(?:https?|wss?|file|ftp|\*):\/\/(?:\*|\*
 const isFirefox = globalThis.navigator?.userAgent.includes('Firefox/');
 
 export const allStarsRegex = isFirefox
-	? /^(?:https?|wss?):\/\/[^/]+(?:\/.*)?$/
-	: /^https?:\/\/[^/]+(?:\/.*)?$/;
-export const allUrlsRegex = /^(?:https?|file|ftp):\/+/;
+	? /^(?:https?|wss?):[/][/][^/]+(?:[/].*)?$/
+	: /^https?:[/][/][^/]+(?:[/].*)?$/;
+export const allUrlsRegex = /^(?:https?|file|ftp):[/]+/;
 
 export function assertValidPattern(matchPattern: string): void {
 	if (!isValidPattern(matchPattern)) {
@@ -41,25 +41,25 @@ function getRawPatternRegex(matchPattern: string): string {
 	assertValidPattern(matchPattern);
 
 	// Host undefined for file:///
-	let [, protocol, host = '', pathname] = matchPattern.split(/(?<protocol>^[^:]+:\/\/)(?<host>[^/]+)?/, 4);
+	let [, protocol, host = '', pathname] = matchPattern.split(/(?<protocol>^[^:]+:[/][/])(?<host>[^/]+)?/, 4);
 
 	protocol = protocol!
 		.replace('*', () => isFirefox ? '(https?|wss?)' : 'https?') // Protocol wildcard
-		.replaceAll('/', '[/]'); // Escape slashes
+		.replaceAll(/[/]/g, '[/]'); // Escape slashes
 
 	if (host === '*') {
 		host = '[^/]+';
 	}
 
 	host &&= host
-		.replace(/^\*\./, '([^/]+.)*') // Initial wildcard
-		.replaceAll('.', '[.]') // Escape dots
-		.replace(/\*$/, '[^.]+'); // Last wildcard
+		.replace(/^[*][.]/, '([^/]+.)*') // Initial wildcard
+		.replaceAll(/[.]/g, '[.]') // Escape dots
+		.replace(/[*]$/, '[^.]+'); // Last wildcard
 
 	pathname = pathname!
-		.replaceAll('/', '[/]') // Escape slashes
-		.replaceAll('.', '[.]') // Escape dots
-		.replaceAll('*', '.*'); // Any wildcard
+		.replaceAll(/[/]/g, '[/]') // Escape slashes
+		.replaceAll(/[.]/g, '[.]') // Escape dots
+		.replaceAll(/[*]/g, '.*'); // Any wildcard
 
 	return '^' + protocol + host + '(' + pathname + ')?$';
 }
@@ -75,7 +75,9 @@ export function patternToRegex(...matchPatterns: readonly string[]): RegExp {
 		return allUrlsRegex;
 	}
 
-	return matchPatterns.includes('*://*/*') ? allStarsRegex : new RegExp(matchPatterns.map(x => getRawPatternRegex(x)).join('|'));
+	return matchPatterns.includes('*://*/*')
+		? allStarsRegex
+		: new RegExp(matchPatterns.map(x => getRawPatternRegex(x)).join('|'));
 }
 
 // The parens are required by .split() to preserve the symbols
@@ -88,13 +90,14 @@ function splitReplace(part: string, index: number) {
 
 	if (index % 2 === 0) {
 		// Raw text, escape it
-
 		return RegExp.escape(part);
 	}
 
 	// Else: Symbol
 	// `*` can be more than one and it swallows surrounding question marks
-	return part.includes('*') ? '.*' : [...part].map(() => isFirefox ? '.' : '.?').join('');
+	return part.includes('*')
+		? '.*'
+		: [...part].map(() => isFirefox ? '.' : '.?').join('');
 }
 
 function getRawGlobRegex(glob: string): string {
@@ -106,14 +109,16 @@ function getRawGlobRegex(glob: string): string {
 
 	// Drop "start with anything" and "end with anything" sequences because they're the default for regex
 	return ('^' + regexString + '$')
-		.replace(/^\.\*/, '')
-		.replace(/\.\*$/, '')
-		.replace(/^\$$/, '.+'); // Catch `*` and `*`
+		.replace(/^[.][*]/, '')
+		.replace(/[.][*]$/, '')
+		.replace(/^[$]$/, '.+'); // Catch `*` and `*`
 }
 
 export function globToRegex(...globs: readonly string[]): RegExp {
 	// No glob, match anything; `include_globs: []` is the default
-	return globs.length === 0 ? /.*/ : new RegExp(globs.map(x => getRawGlobRegex(x)).join('|'));
+	return globs.length === 0
+		? /.*/
+		: new RegExp(globs.map(x => getRawGlobRegex(x)).join('|'));
 }
 
 export function removeRedundantPatterns(matchPatterns: readonly string[]): string[] {
