@@ -1,12 +1,12 @@
 // Copied from https://github.com/mozilla/gecko-dev/blob/5836a062726f715fda621338a17b51aff30d0a8c/toolkit/components/extensions/schemas/manifest.json#L729-L741
-export const patternValidationRegex = /^(https?|wss?|file|ftp|\*):\/\/(\*|\*\.[^*/]+|[^*/]+)\/.*$|^file:\/\/\/.*$|^resource:\/\/(\*|\*\.[^*/]+|[^*/]+)\/.*$|^about:/;
+export const patternValidationRegex = /^(?:https?|wss?|file|ftp|\*):\/\/(?:\*|\*\.[^*/]+|[^*/]+)\/.*$|^file:\/\/\/.*$|^resource:\/\/(?:\*|\*\.[^*/]+|[^*/]+)\/.*$|^about:/;
 
 const isFirefox = globalThis.navigator?.userAgent.includes('Firefox/');
 
 export const allStarsRegex = isFirefox
-	? /^(https?|wss?):[/][/][^/]+([/].*)?$/
-	: /^https?:[/][/][^/]+([/].*)?$/;
-export const allUrlsRegex = /^(https?|file|ftp):[/]+/;
+	? /^(?:https?|wss?):[/][/][^/]+(?:[/].*)?$/
+	: /^https?:[/][/][^/]+(?:[/].*)?$/;
+export const allUrlsRegex = /^(?:https?|file|ftp):[/]+/;
 
 export function assertValidPattern(matchPattern: string): void {
 	if (!isValidPattern(matchPattern)) {
@@ -18,12 +18,9 @@ export function isValidPattern(matchPattern: string): boolean {
 	return matchPattern === '<all_urls>' || patternValidationRegex.test(matchPattern);
 }
 
+// eslint-disable-next-line unicorn/consistent-boolean-name -- Public API
 export function testPatterns(url: string, patterns: string[]): boolean {
-	if (patterns.includes('<all_urls>') && allUrlsRegex.test(url)) {
-		return true;
-	}
-
-	if (patterns.includes('*://*/*') && allStarsRegex.test(url)) {
+	if ((patterns.includes('<all_urls>') && allUrlsRegex.test(url)) || (patterns.includes('*://*/*') && allStarsRegex.test(url))) {
 		return true;
 	}
 
@@ -44,10 +41,10 @@ function getRawPatternRegex(matchPattern: string): string {
 	assertValidPattern(matchPattern);
 
 	// Host undefined for file:///
-	let [, protocol, host = '', pathname] = matchPattern.split(/(^[^:]+:[/][/])([^/]+)?/);
+	let [, protocol, host = '', pathname] = matchPattern.split(/(?<protocol>^[^:]+:[/][/])(?<host>[^/]+)?/, 4);
 
 	protocol = protocol!
-		.replace('*', isFirefox ? '(https?|wss?)' : 'https?') // Protocol wildcard
+		.replace('*', () => isFirefox ? '(https?|wss?)' : 'https?') // Protocol wildcard
 		.replaceAll(/[/]/g, '[/]'); // Escape slashes
 
 	if (host === '*') {
@@ -70,6 +67,7 @@ function getRawPatternRegex(matchPattern: string): string {
 export function patternToRegex(...matchPatterns: readonly string[]): RegExp {
 	// No pattern, match nothing https://stackoverflow.com/q/14115522/288906
 	if (matchPatterns.length === 0) {
+		// eslint-disable-next-line regexp/no-useless-assertions -- Intentionally never matches
 		return /$./;
 	}
 
@@ -77,15 +75,13 @@ export function patternToRegex(...matchPatterns: readonly string[]): RegExp {
 		return allUrlsRegex;
 	}
 
-	if (matchPatterns.includes('*://*/*')) {
-		return allStarsRegex;
-	}
-
-	return new RegExp(matchPatterns.map(x => getRawPatternRegex(x)).join('|'));
+	return matchPatterns.includes('*://*/*')
+		? allStarsRegex
+		: new RegExp(matchPatterns.map(x => getRawPatternRegex(x)).join('|'));
 }
 
 // The parens are required by .split() to preserve the symbols
-const globSymbols = /([?*]+)/;
+const globSymbols = /(?<symbols>[*?]+)/;
 function splitReplace(part: string, index: number) {
 	if (part === '') {
 		// Shortcut for speed
@@ -94,16 +90,14 @@ function splitReplace(part: string, index: number) {
 
 	if (index % 2 === 0) {
 		// Raw text, escape it
-		// eslint-disable-next-line no-use-extend-native/no-use-extend-native -- TODO: Drop after https://github.com/dustinspecker/eslint-plugin-no-use-extend-native/issues/157
 		return RegExp.escape(part);
 	}
 
 	// Else: Symbol
-	if (part.includes('*')) { // Can be more than one and it swallows surrounding question marks
-		return '.*';
-	}
-
-	return [...part].map(() => isFirefox ? '.' : '.?').join('');
+	// `*` can be more than one and it swallows surrounding question marks
+	return part.includes('*')
+		? '.*'
+		: [...part].map(() => isFirefox ? '.' : '.?').join('');
 }
 
 function getRawGlobRegex(glob: string): string {
@@ -122,11 +116,9 @@ function getRawGlobRegex(glob: string): string {
 
 export function globToRegex(...globs: readonly string[]): RegExp {
 	// No glob, match anything; `include_globs: []` is the default
-	if (globs.length === 0) {
-		return /.*/;
-	}
-
-	return new RegExp(globs.map(x => getRawGlobRegex(x)).join('|'));
+	return globs.length === 0
+		? /.*/
+		: new RegExp(globs.map(x => getRawGlobRegex(x)).join('|'));
 }
 
 export function removeRedundantPatterns(matchPatterns: readonly string[]): string[] {

@@ -1,6 +1,10 @@
 import {test, expect} from 'vitest';
 import {
-	patternToRegex, isValidPattern, assertValidPattern, testPatterns, getMatchingPatterns,
+	patternToRegex,
+	isValidPattern,
+	assertValidPattern,
+	testPatterns,
+	getMatchingPatterns,
 } from '../index.js';
 
 // Patterns pulled from https://developer.chrome.com/extensions/match_patterns

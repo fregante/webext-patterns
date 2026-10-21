@@ -99,7 +99,7 @@ googleRegex.test('https://google.it/search'); // -> true
 googleRegex.test('https://google.de/search'); // -> false
 ```
 
-#### removeRedundantPatterns([pattern1, pattern2, etc])
+#### removeRedundantPatterns(\[pattern1, pattern2, etc])
 
 Accepts an array of patterns and returns a filtered array without the patterns that are already covered by others. For example `"https://*/*"` already covers all "https" URLs, so having `"https://google.com/*"` in the array won't make any difference and therefore it's dropped.
 
