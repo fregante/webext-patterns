@@ -10,52 +10,52 @@ import {
 } from '../index.ts';
 
 // Patterns pulled from https://developer.chrome.com/extensions/match_patterns
-const map = new Map();
-map.set('http://*/*', [
-	'http://www.google.com/',
-	'http://example.org/foo/bar.html',
-	'http://fregante.com',
-	'http://fregante.com/search',
-	'http://www.fregante.com/',
-	'http://www.fregante.com/mail',
-]);
-map.set('http://*/foo*', [
-	'http://example.com/foo/bar.html',
-	'http://www.google.com/foo',
-	'http://fregante.com/foobar',
-	'http://mail.fregante.com/foo/king',
-]);
-map.set('https://*.google.com/foo*bar', [
-	'https://www.google.com/foo/baz/bar',
-	'https://docs.google.com/foobar',
-	'https://google.com/foonderbar',
-]);
-map.set('http://example.org/foo/bar.html', [
-	'http://example.org/foo/bar.html',
-]);
-map.set('file:///foo*', [
-	'file:///foo/bar.html',
-	'file:///foo',
-]);
-map.set('http://127.0.0.1/*', [
-	'http://127.0.0.1/',
-	'http://127.0.0.1/foo/bar.html ',
-]);
-map.set('*://mail.google.com/*', [
-	'http://mail.google.com/foo/baz/bar',
-	'https://mail.google.com/foobar',
-]);
+const map = {
+	'http://*/*': [
+		'http://www.google.com/',
+		'http://example.org/foo/bar.html',
+		'http://fregante.com',
+		'http://fregante.com/search',
+		'http://www.fregante.com/',
+		'http://www.fregante.com/mail',
+	],
+	'http://*/foo*': [
+		'http://example.com/foo/bar.html',
+		'http://www.google.com/foo',
+		'http://fregante.com/foobar',
+		'http://mail.fregante.com/foo/king',
+	],
+	'https://*.google.com/foo*bar': [
+		'https://www.google.com/foo/baz/bar',
+		'https://docs.google.com/foobar',
+		'https://google.com/foonderbar',
+	],
+	'http://example.org/foo/bar.html': [
+		'http://example.org/foo/bar.html',
+	],
+	'file:///foo*': [
+		'file:///foo/bar.html',
+		'file:///foo',
+	],
+	'http://127.0.0.1/*': [
+		'http://127.0.0.1/',
+		'http://127.0.0.1/foo/bar.html ',
+	],
+	'*://mail.google.com/*': [
+		'http://mail.google.com/foo/baz/bar',
+		'https://mail.google.com/foobar',
+	],
+	'<all_urls>': [
+		'http://mail.google.com/foo/baz/bar',
+		'https://mail.google.com/foobar',
+		'file:///foo/bar.html',
+		'file:///foo',
+		'http://fregante.com',
+		'ftp://example.com',
+	],
+};
 
-map.set('<all_urls>', [
-	'http://mail.google.com/foo/baz/bar',
-	'https://mail.google.com/foobar',
-	'file:///foo/bar.html',
-	'file:///foo',
-	'http://fregante.com',
-	'ftp://example.com',
-]);
-
-for (const [pattern, urls] of map) {
+for (const [pattern, urls] of Object.entries(map)) {
 	for (const url of urls) {
 		test(`${pattern} matches ${url}`, () => {
 			const regex = patternToRegex(pattern);

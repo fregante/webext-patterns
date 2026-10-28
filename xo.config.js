@@ -13,7 +13,6 @@ const xoConfig = [
 		},
 		rules: {
 			'require-unicode-regexp': 'off',
-			'unicorn/no-immediate-mutation': 'off',
 			// `[/]` is intentional: it avoids escaping and stays readable
 			'regexp/no-useless-character-class': 'off',
 		},
