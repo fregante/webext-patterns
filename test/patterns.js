@@ -1,3 +1,4 @@
+/* eslint-disable n/file-extension-in-import */
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
 import {
@@ -6,7 +7,7 @@ import {
 	assertValidPattern,
 	testPatterns,
 	getMatchingPatterns,
-} from '../distribution/index.js';
+} from '../index.ts';
 
 // Patterns pulled from https://developer.chrome.com/extensions/match_patterns
 const map = new Map();

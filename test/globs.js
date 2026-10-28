@@ -1,6 +1,7 @@
+/* eslint-disable n/file-extension-in-import */
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
-import {globToRegex} from '../distribution/index.js';
+import {globToRegex} from '../index.ts';
 
 const globs = new Map();
 globs.set('https://???.example.com/foo/*', [[

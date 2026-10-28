@@ -1,6 +1,7 @@
+/* eslint-disable n/file-extension-in-import */
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
-import {removeRedundantPatterns} from '../distribution/index.js';
+import {removeRedundantPatterns} from '../index.ts';
 
 test('removeRedundantPatterns', () => {
 	assert.deepEqual(
