@@ -45,7 +45,7 @@ function getRawPatternRegex(matchPattern: string): string {
 
 	protocol = protocol!
 		.replace('*', () => isFirefox ? '(https?|wss?)' : 'https?') // Protocol wildcard
-		.replaceAll(/[/]/g, '[/]'); // Escape slashes
+		.replaceAll('/', '[/]'); // Escape slashes
 
 	if (host === '*') {
 		host = '[^/]+';
@@ -53,13 +53,13 @@ function getRawPatternRegex(matchPattern: string): string {
 
 	host &&= host
 		.replace(/^[*][.]/, '([^/]+.)*') // Initial wildcard
-		.replaceAll(/[.]/g, '[.]') // Escape dots
+		.replaceAll('.', '[.]') // Escape dots
 		.replace(/[*]$/, '[^.]+'); // Last wildcard
 
 	pathname = pathname!
-		.replaceAll(/[/]/g, '[/]') // Escape slashes
-		.replaceAll(/[.]/g, '[.]') // Escape dots
-		.replaceAll(/[*]/g, '.*'); // Any wildcard
+		.replaceAll('/', '[/]') // Escape slashes
+		.replaceAll('.', '[.]') // Escape dots
+		.replaceAll('*', '.*'); // Any wildcard
 
 	return '^' + protocol + host + '(' + pathname + ')?$';
 }
