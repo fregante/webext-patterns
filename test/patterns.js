@@ -1,11 +1,12 @@
-import {test, expect} from 'vitest';
+import {test} from 'node:test';
+import assert from 'node:assert/strict';
 import {
 	patternToRegex,
 	isValidPattern,
 	assertValidPattern,
 	testPatterns,
 	getMatchingPatterns,
-} from '../index.js';
+} from '../distribution/index.js';
 
 // Patterns pulled from https://developer.chrome.com/extensions/match_patterns
 const map = new Map();
@@ -54,22 +55,22 @@ map.set('<all_urls>', [
 ]);
 
 for (const [pattern, urls] of map) {
-	test(pattern, () => {
-		const regex = patternToRegex(pattern);
-		for (const url of urls) {
-			expect(url).toMatch(regex);
-			expect(isValidPattern(pattern)).toBe(true);
-			expect(() => assertValidPattern(pattern)).not.toThrow();
-			expect(testPatterns(url, ['http://never.example.com/*'])).toBe(false);
-			expect(testPatterns(url, ['http://never.example.com/*', pattern, 'http://nope.example.com/*'])).toBe(true);
-			expect(getMatchingPatterns(url, ['http://never.example.com/*'])).toEqual([]);
-			expect(getMatchingPatterns(url, ['http://never.example.com/*', pattern])).toEqual([pattern]);
-		}
-	});
+	for (const url of urls) {
+		test(`${pattern} matches ${url}`, () => {
+			const regex = patternToRegex(pattern);
+			assert.match(url, regex);
+			assert.equal(isValidPattern(pattern), true);
+			assertValidPattern(pattern);
+			assert.equal(testPatterns(url, ['http://never.example.com/*']), false);
+			assert.equal(testPatterns(url, ['http://never.example.com/*', pattern, 'http://nope.example.com/*']), true);
+			assert.deepEqual(getMatchingPatterns(url, ['http://never.example.com/*']), []);
+			assert.deepEqual(getMatchingPatterns(url, ['http://never.example.com/*', pattern]), [pattern]);
+		});
+	}
 }
 
 test('Should not match anything if no patterns are passed', () => {
-	expect('https://mail.google.com/foobar').not.toMatch(patternToRegex());
+	assert.doesNotMatch('https://mail.google.com/foobar', patternToRegex());
 });
 
 const invalidPatterns = [
@@ -83,20 +84,20 @@ const invalidPatterns = [
 ];
 for (const pattern of invalidPatterns) {
 	test('Invalid pattern: ' + pattern, () => {
-		expect(isValidPattern(pattern)).toBe(false);
+		assert.equal(isValidPattern(pattern), false);
 
-		expect(() => patternToRegex(pattern)).toThrow(/is an invalid pattern. See/);
+		assert.throws(() => patternToRegex(pattern), /is an invalid pattern. See/);
 
-		expect(() => assertValidPattern(pattern)).toThrow(/is an invalid pattern. See/);
+		assert.throws(() => assertValidPattern(pattern), /is an invalid pattern. See/);
 	});
 }
 
-const invalidPatternsThatPass = [
-	'resource://path/', // Unsupported scheme
-	'https://mozilla.org:80/', // Host must not include a port number
-];
-for (const pattern of invalidPatternsThatPass) {
-	test.fails('Invalid pattern: ' + pattern, () => {
-		expect(() => patternToRegex(pattern)).toThrow(/is an invalid pattern. See/);
+const invalidPatternsThatPass = new Map([
+	['resource://path/', 'Unsupported scheme is not rejected'],
+	['https://mozilla.org:80/', 'Host with a port number is not rejected'],
+]);
+for (const [pattern, reason] of invalidPatternsThatPass) {
+	test('Invalid pattern: ' + pattern, {expectFailure: reason}, () => {
+		assert.throws(() => patternToRegex(pattern), /is an invalid pattern. See/);
 	});
 }

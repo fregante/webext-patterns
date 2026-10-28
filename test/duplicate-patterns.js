@@ -1,5 +1,6 @@
-import {test, assert} from 'vitest';
-import {removeRedundantPatterns} from '../index.js';
+import {test} from 'node:test';
+import assert from 'node:assert/strict';
+import {removeRedundantPatterns} from '../distribution/index.js';
 
 test('removeRedundantPatterns', () => {
 	assert.deepEqual(
