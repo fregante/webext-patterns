@@ -34,4 +34,4 @@ jobs:
           node-version: 24
       - run: npm install
       - run: npm run build
-      - run: npx vitest run
+      - run: node --test

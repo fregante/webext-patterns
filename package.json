@@ -20,7 +20,7 @@
 		"fix": "xo --fix",
 		"lint": "xo",
 		"prepare": "tsc --sourceMap false",
-		"test": "tsc && vitest run && xo",
+		"test": "tsc && node --test && xo",
 		"watch": "tsc --watch"
 	},
 	"files": [
@@ -48,7 +48,6 @@
 		"sinon": "^22.1.0",
 		"type-fest": "^5.10.0",
 		"typescript": "^6.0.2",
-		"vitest": "^5.0.5",
 		"xo": "^5.0.1"
 	},
 	"webExt": {

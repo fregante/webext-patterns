@@ -1,75 +1,77 @@
-import {test, expect} from 'vitest';
+/* eslint-disable unicorn/prefer-https -- Need to be tested */
+import {test} from 'node:test';
+import assert from 'node:assert/strict';
 import {
 	patternToRegex,
 	isValidPattern,
 	assertValidPattern,
 	testPatterns,
 	getMatchingPatterns,
-} from '../index.js';
+} from '../index.ts';
 
 // Patterns pulled from https://developer.chrome.com/extensions/match_patterns
-const map = new Map();
-map.set('http://*/*', [
-	'http://www.google.com/',
-	'http://example.org/foo/bar.html',
-	'http://fregante.com',
-	'http://fregante.com/search',
-	'http://www.fregante.com/',
-	'http://www.fregante.com/mail',
-]);
-map.set('http://*/foo*', [
-	'http://example.com/foo/bar.html',
-	'http://www.google.com/foo',
-	'http://fregante.com/foobar',
-	'http://mail.fregante.com/foo/king',
-]);
-map.set('https://*.google.com/foo*bar', [
-	'https://www.google.com/foo/baz/bar',
-	'https://docs.google.com/foobar',
-	'https://google.com/foonderbar',
-]);
-map.set('http://example.org/foo/bar.html', [
-	'http://example.org/foo/bar.html',
-]);
-map.set('file:///foo*', [
-	'file:///foo/bar.html',
-	'file:///foo',
-]);
-map.set('http://127.0.0.1/*', [
-	'http://127.0.0.1/',
-	'http://127.0.0.1/foo/bar.html ',
-]);
-map.set('*://mail.google.com/*', [
-	'http://mail.google.com/foo/baz/bar',
-	'https://mail.google.com/foobar',
-]);
+const map = {
+	'http://*/*': [
+		'http://www.google.com/',
+		'http://example.org/foo/bar.html',
+		'http://fregante.com',
+		'http://fregante.com/search',
+		'http://www.fregante.com/',
+		'http://www.fregante.com/mail',
+	],
+	'http://*/foo*': [
+		'http://example.com/foo/bar.html',
+		'http://www.google.com/foo',
+		'http://fregante.com/foobar',
+		'http://mail.fregante.com/foo/king',
+	],
+	'https://*.google.com/foo*bar': [
+		'https://www.google.com/foo/baz/bar',
+		'https://docs.google.com/foobar',
+		'https://google.com/foonderbar',
+	],
+	'http://example.org/foo/bar.html': [
+		'http://example.org/foo/bar.html',
+	],
+	'file:///foo*': [
+		'file:///foo/bar.html',
+		'file:///foo',
+	],
+	'http://127.0.0.1/*': [
+		'http://127.0.0.1/',
+		'http://127.0.0.1/foo/bar.html ',
+	],
+	'*://mail.google.com/*': [
+		'http://mail.google.com/foo/baz/bar',
+		'https://mail.google.com/foobar',
+	],
+	'<all_urls>': [
+		'http://mail.google.com/foo/baz/bar',
+		'https://mail.google.com/foobar',
+		'file:///foo/bar.html',
+		'file:///foo',
+		'http://fregante.com',
+		'ftp://example.com',
+	],
+};
 
-map.set('<all_urls>', [
-	'http://mail.google.com/foo/baz/bar',
-	'https://mail.google.com/foobar',
-	'file:///foo/bar.html',
-	'file:///foo',
-	'http://fregante.com',
-	'ftp://example.com',
-]);
-
-for (const [pattern, urls] of map) {
-	test(pattern, () => {
-		const regex = patternToRegex(pattern);
-		for (const url of urls) {
-			expect(url).toMatch(regex);
-			expect(isValidPattern(pattern)).toBe(true);
-			expect(() => assertValidPattern(pattern)).not.toThrow();
-			expect(testPatterns(url, ['http://never.example.com/*'])).toBe(false);
-			expect(testPatterns(url, ['http://never.example.com/*', pattern, 'http://nope.example.com/*'])).toBe(true);
-			expect(getMatchingPatterns(url, ['http://never.example.com/*'])).toEqual([]);
-			expect(getMatchingPatterns(url, ['http://never.example.com/*', pattern])).toEqual([pattern]);
-		}
-	});
+for (const [pattern, urls] of Object.entries(map)) {
+	for (const url of urls) {
+		test(`${pattern} matches ${url}`, () => {
+			const regex = patternToRegex(pattern);
+			assert.match(url, regex);
+			assert.equal(isValidPattern(pattern), true);
+			assertValidPattern(pattern);
+			assert.equal(testPatterns(url, ['http://never.example.com/*']), false);
+			assert.equal(testPatterns(url, ['http://never.example.com/*', pattern, 'http://nope.example.com/*']), true);
+			assert.deepEqual(getMatchingPatterns(url, ['http://never.example.com/*']), []);
+			assert.deepEqual(getMatchingPatterns(url, ['http://never.example.com/*', pattern]), [pattern]);
+		});
+	}
 }
 
 test('Should not match anything if no patterns are passed', () => {
-	expect('https://mail.google.com/foobar').not.toMatch(patternToRegex());
+	assert.doesNotMatch('https://mail.google.com/foobar', patternToRegex());
 });
 
 const invalidPatterns = [
@@ -83,20 +85,20 @@ const invalidPatterns = [
 ];
 for (const pattern of invalidPatterns) {
 	test('Invalid pattern: ' + pattern, () => {
-		expect(isValidPattern(pattern)).toBe(false);
+		assert.equal(isValidPattern(pattern), false);
 
-		expect(() => patternToRegex(pattern)).toThrow(/is an invalid pattern. See/);
+		assert.throws(() => patternToRegex(pattern), /is an invalid pattern. See/);
 
-		expect(() => assertValidPattern(pattern)).toThrow(/is an invalid pattern. See/);
+		assert.throws(() => assertValidPattern(pattern), /is an invalid pattern. See/);
 	});
 }
 
-const invalidPatternsThatPass = [
-	'resource://path/', // Unsupported scheme
-	'https://mozilla.org:80/', // Host must not include a port number
-];
-for (const pattern of invalidPatternsThatPass) {
-	test.fails('Invalid pattern: ' + pattern, () => {
-		expect(() => patternToRegex(pattern)).toThrow(/is an invalid pattern. See/);
+const invalidPatternsThatPass = new Map([
+	['resource://path/', 'Unsupported scheme is not rejected'],
+	['https://mozilla.org:80/', 'Host with a port number is not rejected'],
+]);
+for (const [pattern, reason] of invalidPatternsThatPass) {
+	test('Invalid pattern: ' + pattern, {expectFailure: reason}, () => {
+		assert.throws(() => patternToRegex(pattern), /is an invalid pattern. See/);
 	});
 }

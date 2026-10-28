@@ -1,5 +1,7 @@
-import {test, assert} from 'vitest';
-import {removeRedundantPatterns} from '../index.js';
+/* eslint-disable unicorn/prefer-https -- Need to be tested */
+import {test} from 'node:test';
+import assert from 'node:assert/strict';
+import {removeRedundantPatterns} from '../index.ts';
 
 test('removeRedundantPatterns', () => {
 	assert.deepEqual(
